@@ -18,6 +18,28 @@ public class Item : MonoBehaviour {
 	public bool highlighted { get; set; }
 
 
+	/// <summary> Gets or sets whether other colliders can collide with this item. </summary>
+	public bool enableCollision {
+		get { return _collider.enabled; }
+		set { _collider.enabled = value; }
+	}
+
+	/// <summary> Gets or sets whether physics are enabled on this item.
+	///           If disabled, resets the item's motion. </summary>
+	public bool enablePhysics {
+		get { return !_rigidbody.isKinematic; }
+		set {
+			_rigidbody.isKinematic = !value;
+			_rigidbody.detectCollisions = value;
+			// Reset motion when set to disabled.
+			if (!value) {
+				_rigidbody.velocity = Vector3.zero;
+				_rigidbody.angularVelocity = Vector3.zero;
+			}
+		}
+	}
+
+
 	void Start() {
 		_rigidbody = GetComponent<Rigidbody>();
 		_collider = GetComponent<Collider>();
@@ -46,12 +68,8 @@ public class Item : MonoBehaviour {
 		transform.localPosition = Vector3.zero;
 		transform.localRotation = Quaternion.identity;
 
-		_collider.enabled = false;
-		_rigidbody.isKinematic = true;
-		_rigidbody.detectCollisions = false;
-
-		_rigidbody.velocity = Vector3.zero;
-		_rigidbody.angularVelocity = Vector3.zero;
+		enableCollision = false;
+		enablePhysics = false;
 	}
 
 	public void Drop(Vector3 force = new Vector3()) {
@@ -63,10 +81,10 @@ public class Item : MonoBehaviour {
 		_attachment = null;
 
 		transform.parent = null;
-		
-		_collider.enabled = true;
-		_rigidbody.isKinematic = false;
-		_rigidbody.detectCollisions = true;
+
+		enableCollision = true;
+		enablePhysics = true;
+
 		_rigidbody.AddForce(force);
 	}
 
