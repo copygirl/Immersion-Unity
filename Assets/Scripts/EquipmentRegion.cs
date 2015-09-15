@@ -3,25 +3,30 @@ using UnityEngine;
 
 public class EquipmentRegion {
 
-	public static readonly EquipmentRegion HELD_RIGHT = new EquipmentRegion("Held: Right Hand");
-	public static readonly EquipmentRegion HELD_LEFT = new EquipmentRegion("Held: Left Hand");
-	public static readonly EquipmentRegion HELD_BOTH = new EquipmentRegion("Held: Both Hands", HELD_RIGHT, HELD_LEFT);
+	public static readonly EquipmentRegion HELD_RIGHT = new EquipmentRegion("Held: Right Hand", "held");
+	public static readonly EquipmentRegion HELD_LEFT = new EquipmentRegion("Held: Left Hand", "held");
 
 
 	public readonly string name;
+	public readonly string group;
 
 	EquipmentRegion[] _conflictingSlots;
 
 
-	public EquipmentRegion(string name, params EquipmentRegion[] conflictingSlots) {
+	public EquipmentRegion(string name, string group = null) {
 		this.name = name;
+		this.group = group;
+	}
+
+	public EquipmentRegion setConflicting(params EquipmentRegion[] conflictingSlots) {
 		_conflictingSlots = conflictingSlots;
 	}
 
 
-	public virtual bool Compatible(EquipmentRegion other) {
-		return !_conflictingSlots.Contains(other);
+	public virtual bool compatible(EquipmentRegion other) {
+		return ((_conflictingSlots == null) || !_conflictingSlots.Contains(other));
 	}
+
 
 	public override string ToString() {
 		return string.Format("[EquipmentSlot \"{0}\"]", name);
@@ -42,5 +47,4 @@ public class EquipmentRegion {
 	}
 
 	#endregion
-
 }

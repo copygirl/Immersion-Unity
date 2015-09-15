@@ -1,20 +1,18 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary> Script component identifying game entities that should function as items. </summary>
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class Item : MonoBehaviour {
-
-	GameObject _attachment;
 
 	Rigidbody _rigidbody;
 	Collider _collider;
 	
 
-	public GameObject owner { get; private set; }
+	/// <summary> Gets the equipment slot the item is currently carried in, null if none. </summary>
+	public EquipmentSlot slot { get; private set; }
 
-	public bool held { get { return (owner != null); } }
-
+	/// <summary> Gets or sets whether the item should be highlighted for this frame. </summary>
 	public bool highlighted { get; set; }
 
 
@@ -56,36 +54,45 @@ public class Item : MonoBehaviour {
 		highlighted = false;
 	}
 
-	public void PickUp(GameObject owner, GameObject attachment) {
-		if (held)
-			throw new InvalidOperationException(string.Format(
-				"{0} is already being held by {1}", gameObject, owner));
 
-		this.owner = owner;
-		_attachment = attachment;
+	/// <summary> Returns if the item may be equipped in the specified slot.
+	///           Doesn't check any requirement than just those of the item itself. </summary>
+	public virtual bool canEquip(EquipmentSlot slot) { return true; }
 
-		transform.parent = _attachment.transform;
+	/// <summary> Returns if the item can be unequipped from the specified slot.
+	///           Doesn't check any requirement than just those of the item itself. </summary>
+	public virtual bool canUnequip(EquipmentSlot slot) { return true; }
+
+
+	/// <summary> Called when the item is equipped in the specified slot. </summary>
+	public virtual void onEquip(EquipmentSlot slot) {
+		this.slot = slot;
+
+		transform.parent = slot.attachment.transform;
 		transform.localPosition = Vector3.zero;
 		transform.localRotation = Quaternion.identity;
-
-		enableCollision = false;
-		enablePhysics = false;
 	}
 
-	public void Drop(Vector3 force = new Vector3()) {
-		if (!held)
-			throw new InvalidOperationException(string.Format(
-				"{0} is not held by anything", gameObject));
-
-		owner = null;
-		_attachment = null;
+	/// <summary> Called when the item is unequipped from its current slot. </summary>
+	public virtual void onUnequip() {
+		this.slot = null;
 
 		transform.parent = null;
+	}
 
+
+	/// <summary> Called when the item is picked up from the world. </summary>
+	public virtual void onPickup() {
+		enableCollision = false;
+		enablePhysics = false;
+
+	}
+
+	/// <summary> Called when the item is dropped into the world,
+	///           after being equipped or stored somewhere. </summary>
+	public virtual void onDrop() {
 		enableCollision = true;
 		enablePhysics = true;
-
-		_rigidbody.AddForce(force);
 	}
 
 }

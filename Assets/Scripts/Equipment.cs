@@ -16,7 +16,7 @@ public class Equipment : MonoBehaviour, IEnumerable<EquipmentSlot> {
 
 
 	public EquipmentSlot AddSlot(EquipmentRegion region, GameObject attachment) {
-		var slot = new EquipmentSlot(region, attachment);
+		var slot = new EquipmentSlot(this, region, attachment);
 		_slots.Add(region, slot);
 		return slot;
 	}
