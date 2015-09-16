@@ -43,8 +43,7 @@ public class EquipmentSlot {
 
 	/// <summary> Returns if the specified item can be equipped in this slot. </summary>
 	public bool canEquip(Item item) {
-		return ((item != null) && !occupied && item.canEquip(this) &&
-		        equipment.All(slot => ((slot == this) || slot.region.compatible(region))));
+		return ((item != null) && !occupied && item.canEquip(this));
 	}
 
 	/// <summary> Returns if the current item can be unequipped from this slot. </summary>
