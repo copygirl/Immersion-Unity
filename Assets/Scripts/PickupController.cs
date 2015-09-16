@@ -22,38 +22,42 @@ public class PickupController : MonoBehaviour {
 	}
 	
 	void Update() {
-		var drop = Input.GetButton("Drop");
-
-		var right = Input.GetButton("Right Hand");
-		var rightPressed = Input.GetButtonDown("Right Hand");
-		var rightReleased = Input.GetButtonUp("Right Hand");
-
 		Item highlightedItem = null;
 
-		if (rightHand.occupied) {
-			if (drop && rightPressed) {
-				var item = rightHand.item;
-				rightHand.Unequip();
-				item.OnDrop();
-				item.GetComponent<Rigidbody>().AddForce((Vector3.up + _camera.transform.forward) * 200.0f);
-			}
-		} else {
-			RaycastHit hitInfo;
-			if (Physics.Raycast(_camera.position, _camera.transform.forward, out hitInfo, pickupRange)) {
-				var hitObject = hitInfo.collider.gameObject;
-				if (hitObject != null) {
-					var item = hitObject.GetComponent<Item>();
-					if (item != null) {
-						item.highlighted = true;
-						highlightedItem = item;
-					}
+		RaycastHit hitInfo;
+		if (Physics.Raycast(_camera.position, _camera.transform.forward, out hitInfo, pickupRange)) {
+			var hitObject = hitInfo.collider.gameObject;
+			if (hitObject != null) {
+				var item = hitObject.GetComponent<Item>();
+				if (item != null) {
+					item.highlighted = true;
+					highlightedItem = item;
 				}
 			}
 		}
 
-		if (!rightHand.occupied && (highlightedItem != null) && rightPressed) {
+		HandleHand(rightHand, "Right Hand", highlightedItem);
+		HandleHand(leftHand, "Left Hand", highlightedItem);
+	}
+
+
+	void HandleHand(EquipmentSlot slot, string input, Item highlightedItem) {
+		var down = Input.GetButton(input);
+		var pressed = Input.GetButtonDown(input);
+		var released = Input.GetButtonUp(input);
+
+		var drop = Input.GetButton("Drop");
+		
+		if (slot.occupied) {
+			if (drop && pressed) {
+				var item = slot.item;
+				slot.Unequip();
+				item.OnDrop();
+				item.GetComponent<Rigidbody>().AddForce((Vector3.up + _camera.transform.forward) * 200.0f);
+			}
+		} else if ((highlightedItem != null) && pressed) {
 			highlightedItem.OnPickup();
-			rightHand.Equip(highlightedItem);
+			slot.Equip(highlightedItem);
 		}
 	}
 
