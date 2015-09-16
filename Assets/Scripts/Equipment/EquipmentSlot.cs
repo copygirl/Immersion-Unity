@@ -54,7 +54,7 @@ public class EquipmentSlot {
 
 	/// <summary> Equips the specified item in this slot. </summary>
 	public void equip(Item item) {
-		if (item != null)
+		if (occupied)
 			throw new InvalidOperationException(string.Format(
 				"{0} is already occupied", this));
 		if (!canEquip(item))
@@ -67,10 +67,10 @@ public class EquipmentSlot {
 
 	/// <summary> Unequips the specified item from this slot. </summary>
 	public void unequip() {
-		if (item == null)
+		if (!occupied)
 			throw new InvalidOperationException(string.Format(
 				"{0} doesn't contain an item", this));
-		if (canUnequip())
+		if (!canUnequip())
 			throw new InvalidOperationException(string.Format(
 				"Can't unequip {0} from {1}", item, this));
 
