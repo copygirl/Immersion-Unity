@@ -3,21 +3,12 @@ using UnityEngine;
 
 public class Equipment : MonoBehaviour, IEnumerable<EquipmentSlot> {
 
-	Dictionary<EquipmentRegion, EquipmentSlot> _slots =
-		new Dictionary<EquipmentRegion, EquipmentSlot>();
-
-
-	public EquipmentSlot this[EquipmentRegion region] {
-		get {
-			EquipmentSlot slot;
-			return (_slots.TryGetValue(region, out slot) ? slot : null);
-		}
-	}
+	List<EquipmentSlot> _slots = new List<EquipmentSlot>();
 
 
 	public EquipmentSlot AddSlot(GameObject attachment, EquipmentRegion region, params EquipmentTag[] tags) {
 		var slot = new EquipmentSlot(this, attachment, region, tags);
-		_slots.Add(region, slot);
+		_slots.Add(slot);
 		return slot;
 	}
 
@@ -25,7 +16,7 @@ public class Equipment : MonoBehaviour, IEnumerable<EquipmentSlot> {
 	#region IEnumerable implementation
 
 	public IEnumerator<EquipmentSlot> GetEnumerator() {
-		return _slots.Values.GetEnumerator();
+		return _slots.GetEnumerator();
 	}
 
 	System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {

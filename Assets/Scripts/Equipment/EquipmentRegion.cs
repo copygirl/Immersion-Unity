@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-
+﻿
 /// <summary> Represents an equipment region on an entity.
 ///           Used for both bodies (head, chest, legs, feet, etc)
 ///           and non-living things (belt slots, pouches, etc). </summary>
