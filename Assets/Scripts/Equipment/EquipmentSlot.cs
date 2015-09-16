@@ -1,18 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 /// <summary> Represents a slot in an entity's equipment. </summary>
 public class EquipmentSlot {
 
+	#region Public properties
+
 	/// <summary> Gets the equipment compound of this slot. </summary>
 	public Equipment equipment { get; private set; }
-
-	/// <summary> Gets the equipment region this slot occupies. </summary>
-	public EquipmentRegion region { get; private set; }
-
+	
 	/// <summary> Gets the object items will be added to as childs when equipped. </summary>
 	public GameObject attachment { get; private set; }
+
+
+	/// <summary> Gets the equipment region of this slot. </summary>
+	public EquipmentRegion region { get; private set; }
+	
+	/// <summary> Gets the equipment tags of this slot, which describe its use. </summary>
+	public IEnumerable<EquipmentTag> tags { get; private set; }
 
 
 	/// <summary> Gets the item currently equipped in this slot, null if none. </summary>
@@ -22,11 +29,15 @@ public class EquipmentSlot {
 	/// <summary> Gets whether an item is currently quipped in this slot. </summary>
 	public bool occupied { get { return (item != null); } }
 
+	#endregion
 
-	public EquipmentSlot(Equipment equipment, EquipmentRegion region, GameObject attachment) {
+
+	public EquipmentSlot(Equipment equipment, GameObject attachment,
+	                     EquipmentRegion region, params EquipmentTag[] tags) {
 		this.equipment = equipment;
-		this.region = region;
 		this.attachment = attachment;
+		this.region = region;
+		this.tags = tags;
 	}
 
 
