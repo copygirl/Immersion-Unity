@@ -1,35 +1,23 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
+/// <summary> Represents an equipment region on an entity.
+///           Used for both bodies (head, chest, legs, feet, etc)
+///           and non-living things (belt slots, pouches, etc). </summary>
 public class EquipmentRegion {
 
-	public static readonly EquipmentRegion HELD_RIGHT = new EquipmentRegion("Held: Right Hand", "held");
-	public static readonly EquipmentRegion HELD_LEFT = new EquipmentRegion("Held: Left Hand", "held");
+	public static readonly EquipmentRegion HAND = new EquipmentRegion("hand");
 
 
-	public readonly string name;
-	public readonly string group;
-
-	EquipmentRegion[] _conflictingSlots;
+	public string name { get; private set; }
 
 
-	public EquipmentRegion(string name, string group = null) {
+	public EquipmentRegion(string name) {
 		this.name = name;
-		this.group = group;
-	}
-
-	public EquipmentRegion setConflicting(params EquipmentRegion[] conflictingSlots) {
-		_conflictingSlots = conflictingSlots;
-	}
-
-
-	public virtual bool compatible(EquipmentRegion other) {
-		return ((_conflictingSlots == null) || !_conflictingSlots.Contains(other));
 	}
 
 
 	public override string ToString() {
-		return string.Format("[EquipmentSlot \"{0}\"]", name);
+		return string.Format("[EquipmentRegion \"{0}\"]", name);
 	}
 
 
