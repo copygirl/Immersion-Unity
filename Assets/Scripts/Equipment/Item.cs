@@ -57,15 +57,15 @@ public class Item : MonoBehaviour {
 
 	/// <summary> Returns if the item may be equipped in the specified slot.
 	///           Doesn't check any requirement than just those of the item itself. </summary>
-	public virtual bool canEquip(EquipmentSlot slot) { return true; }
+	public virtual bool CanEquip(EquipmentSlot slot) { return true; }
 
 	/// <summary> Returns if the item can be unequipped from the specified slot.
 	///           Doesn't check any requirement than just those of the item itself. </summary>
-	public virtual bool canUnequip(EquipmentSlot slot) { return true; }
+	public virtual bool CanUnequip(EquipmentSlot slot) { return true; }
 
 
 	/// <summary> Called when the item is equipped in the specified slot. </summary>
-	public virtual void onEquip(EquipmentSlot slot) {
+	public virtual void OnEquip(EquipmentSlot slot) {
 		this.slot = slot;
 
 		transform.parent = slot.attachment.transform;
@@ -74,7 +74,7 @@ public class Item : MonoBehaviour {
 	}
 
 	/// <summary> Called when the item is unequipped from its current slot. </summary>
-	public virtual void onUnequip() {
+	public virtual void OnUnequip() {
 		this.slot = null;
 
 		transform.parent = null;
@@ -82,7 +82,7 @@ public class Item : MonoBehaviour {
 
 
 	/// <summary> Called when the item is picked up from the world. </summary>
-	public virtual void onPickup() {
+	public virtual void OnPickup() {
 		enableCollision = false;
 		enablePhysics = false;
 
@@ -90,7 +90,7 @@ public class Item : MonoBehaviour {
 
 	/// <summary> Called when the item is dropped into the world,
 	///           after being equipped or stored somewhere. </summary>
-	public virtual void onDrop() {
+	public virtual void OnDrop() {
 		enableCollision = true;
 		enablePhysics = true;
 	}

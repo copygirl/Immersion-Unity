@@ -42,39 +42,39 @@ public class EquipmentSlot {
 
 
 	/// <summary> Returns if the specified item can be equipped in this slot. </summary>
-	public bool canEquip(Item item) {
-		return ((item != null) && !occupied && item.canEquip(this));
+	public bool CanEquip(Item item) {
+		return ((item != null) && !occupied && item.CanEquip(this));
 	}
 
 	/// <summary> Returns if the current item can be unequipped from this slot. </summary>
-	public bool canUnequip() {
-		return (occupied && item.canUnequip(this));
+	public bool CanUnequip() {
+		return (occupied && item.CanUnequip(this));
 	}
 
 
 	/// <summary> Equips the specified item in this slot. </summary>
-	public void equip(Item item) {
+	public void Equip(Item item) {
 		if (occupied)
 			throw new InvalidOperationException(string.Format(
 				"{0} is already occupied", this));
-		if (!canEquip(item))
+		if (!CanEquip(item))
 			throw new InvalidOperationException(string.Format(
 				"Can't equip {0} in {1}", item, this));
 
 		this.item = item;
-		item.onEquip(this);
+		item.OnEquip(this);
 	}
 
 	/// <summary> Unequips the specified item from this slot. </summary>
-	public void unequip() {
+	public void Unequip() {
 		if (!occupied)
 			throw new InvalidOperationException(string.Format(
 				"{0} doesn't contain an item", this));
-		if (!canUnequip())
+		if (!CanUnequip())
 			throw new InvalidOperationException(string.Format(
 				"Can't unequip {0} from {1}", item, this));
 
-		item.onUnequip();
+		item.OnUnequip();
 		item = null;
 	}
 
