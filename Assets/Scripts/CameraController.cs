@@ -38,8 +38,6 @@ public class CameraController : MonoBehaviour {
 
 	void Start() {
 		_parentTransform = transform.parent;
-		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = false;
 	}
 
 	void Update() {
