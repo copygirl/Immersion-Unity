@@ -303,7 +303,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1168213096}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bab8e4d9686d6c042ba066c3afbd596e, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d3145d12f8d9144db1c30f71b0544ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1171773465
@@ -621,6 +621,7 @@ GameObject:
   - 143: {fileID: 1786549543}
   - 114: {fileID: 1786549542}
   - 114: {fileID: 1786549544}
+  - 114: {fileID: 1786549545}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -702,5 +703,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickupRange: 2
-  rightHand: {fileID: 1562270441}
-  leftHand: {fileID: 394013656}
+  rightHandAttachment: {fileID: 1562270441}
+  leftHandAttachment: {fileID: 394013656}
+--- !u!114 &1786549545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1786549539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b58b00a1b9169174c9b68c11e726fffa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
