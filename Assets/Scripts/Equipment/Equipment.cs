@@ -15,8 +15,8 @@ public class Equipment : MonoBehaviour, IEnumerable<EquipmentSlot> {
 	}
 
 
-	public EquipmentSlot AddSlot(EquipmentRegion region, GameObject attachment) {
-		var slot = new EquipmentSlot(this, region, attachment);
+	public EquipmentSlot AddSlot(GameObject attachment, EquipmentRegion region, params EquipmentTag[] tags) {
+		var slot = new EquipmentSlot(this, attachment, region, tags);
 		_slots.Add(region, slot);
 		return slot;
 	}
