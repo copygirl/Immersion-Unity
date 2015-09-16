@@ -16,10 +16,10 @@ public class EquipmentSlot {
 
 
 	/// <summary> Gets the equipment region of this slot. </summary>
-	public EquipmentRegion region { get; private set; }
+	public string region { get; private set; }
 	
 	/// <summary> Gets the equipment tags of this slot, which describe its use. </summary>
-	public IEnumerable<EquipmentTag> tags { get; private set; }
+	public IEnumerable<string> tags { get; private set; }
 
 
 	/// <summary> Gets the item currently equipped in this slot, null if none. </summary>
@@ -33,7 +33,7 @@ public class EquipmentSlot {
 
 
 	public EquipmentSlot(Equipment equipment, GameObject attachment,
-	                     EquipmentRegion region, params EquipmentTag[] tags) {
+	                     string region, params string[] tags) {
 		this.equipment = equipment;
 		this.attachment = attachment;
 		this.region = region;

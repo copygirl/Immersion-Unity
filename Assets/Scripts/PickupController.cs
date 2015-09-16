@@ -16,8 +16,8 @@ public class PickupController : MonoBehaviour {
 
 	void Start() {
 		_equipment = GetComponent<Equipment>();
-		rightHand = _equipment.AddSlot(rightHandAttachment, EquipmentRegion.HAND, EquipmentTag.HELD, EquipmentTag.RIGHT);
-		leftHand  = _equipment.AddSlot(leftHandAttachment, EquipmentRegion.HAND, EquipmentTag.HELD, EquipmentTag.LEFT);
+		rightHand = _equipment.AddSlot(rightHandAttachment, "hand", "held", "right");
+		leftHand  = _equipment.AddSlot(leftHandAttachment, "hand", "held", "left");
 		_camera = Camera.main.GetComponent<CameraController>();
 	}
 	
