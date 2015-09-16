@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour {
 	public Vector2 sensitivity = new Vector2(6.0f, 6.0f);
 
 	public float minLookAngle = -80.0f;
-	public float maxLookAngle = 70.0f;
+	public float maxLookAngle = 80.0f;
 
 
 	Transform _parentTransform;

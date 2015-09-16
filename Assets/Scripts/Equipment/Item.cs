@@ -7,7 +7,9 @@ public class Item : MonoBehaviour {
 
 	Rigidbody _rigidbody;
 	Collider _collider;
-	
+
+
+	#region Public properties
 
 	/// <summary> Gets the equipment slot the item is currently carried in, null if none. </summary>
 	public EquipmentSlot slot { get; private set; }
@@ -36,6 +38,8 @@ public class Item : MonoBehaviour {
 			}
 		}
 	}
+
+	#endregion
 
 
 	void Start() {
