@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour {
 		var forward = Input.GetAxisRaw("Vertical");
 		var sideways = Input.GetAxisRaw("Horizontal");
 		var sprinting = Input.GetButton("Sprint");
-		var jump = Input.GetButton("Jump");
+		var jump = Input.GetButtonDown("Jump");
 		
 		var lookRotation = Quaternion.Euler(0.0f, _camera.transform.eulerAngles.y, 0.0f);
 
