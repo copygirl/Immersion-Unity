@@ -25,7 +25,7 @@ public static class BlockExtensions {
 
 	/// <summary> Returns a neighboring block from the same IBlockStorage. </summary>
 	public static IBlock Neighbor(this IBlock block, BlockFacing face) {
-		return block.Relative(face.MoveRelative(block.position));
+		return block.storage[face.MoveRelative(block.position)];
 	}
 
 }

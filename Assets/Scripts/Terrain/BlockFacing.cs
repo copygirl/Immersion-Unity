@@ -51,7 +51,7 @@ public static class BlockFacingExtensions {
 	public static BlockPos MoveRelative(this BlockFacing facing, BlockPos pos) {
 		int x = pos.x, y = pos.y, z = pos.z;
 		facing.MoveRelative(ref x, ref y, ref z);
-		return new Vector3(x, y, z);
+		return new BlockPos(x, y, z);
 	}
 
 	public static Vector3 ToVector(this BlockFacing facing) {
