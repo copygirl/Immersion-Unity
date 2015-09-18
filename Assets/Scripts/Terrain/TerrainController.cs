@@ -14,7 +14,7 @@ public class TerrainController : MonoBehaviour {
 
 	void Start() {
 		var terrain = GenerateTerrain(width, depth, height);
-		var mesh = CreateTerrainMesh(terrain);
+		var mesh = new SurfaceNetsMeshGenerator().Generate(new Mesh(), terrain);
 
 		GetComponent<MeshFilter>().mesh = mesh;
 		GetComponent<MeshCollider>().sharedMesh = mesh;
@@ -35,48 +35,6 @@ public class TerrainController : MonoBehaviour {
 		}
 
 		return terrain;
-	}
-
-	Mesh CreateTerrainMesh(Terrain terrain) {
-		var mesh = new Mesh();
-
-		List<Vector3> vertices = new List<Vector3>();
-		List<Vector3> normals = new List<Vector3>();
-		List<int> triangles = new List<int>();
-
-		for (var x = terrain.region.start.x; x <= terrain.region.end.x; x++)
-			for (var y = terrain.region.start.y; y <= terrain.region.end.y; y++)
-				for (var z = terrain.region.start.z; z <= terrain.region.end.z; z++) {
-				var block = terrain[new BlockPos(x, y, z)];
-				if (block.material != Terrain.EARTH) continue;
-
-				int index = vertices.Count;
-
-				vertices.Add(new Vector3(x,     y, z));
-				vertices.Add(new Vector3(x + 1, y, z));
-				vertices.Add(new Vector3(x + 1, y, z + 1));
-				vertices.Add(new Vector3(x,     y, z + 1));
-
-				normals.Add(Vector3.up);
-				normals.Add(Vector3.up);
-				normals.Add(Vector3.up);
-				normals.Add(Vector3.up);
-				
-				triangles.Add(index);
-				triangles.Add(index + 3);
-				triangles.Add(index + 1);
-
-				triangles.Add(index + 1);
-				triangles.Add(index + 3);
-				triangles.Add(index + 2);
-			}
-
-		mesh.vertices = vertices.ToArray();
-		mesh.normals = normals.ToArray();
-		mesh.triangles = triangles.ToArray();
-		mesh.Optimize();
-		
-		return mesh;
 	}
 
 }
