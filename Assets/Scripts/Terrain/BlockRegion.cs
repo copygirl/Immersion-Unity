@@ -31,6 +31,14 @@ public struct BlockRegion {
 	}
 
 
+	/// <summary> Returns a region that is the specified number
+	///           of blocks larger in all 6 directions. </summary>
+	public BlockRegion Expand(int size){
+		return new BlockRegion(start.Relative(-size, -size, -size),
+		                       end.Relative(size, size, size));
+	}
+
+
 	#region ToString, Equals, GetHashCode and equality operators
 
 	public override string ToString() {
