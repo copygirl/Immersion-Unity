@@ -49,19 +49,20 @@ public class SurfaceNetsMeshGenerator {
 
 	public Mesh Generate(Mesh mesh, IBlockStorage storage) {
 
-		var region = storage.region;
+		var region = storage.region.Expand(1);
 
 		var vertices = new List<Vector3>();
 		var normals  = new List<Vector3>();
+		var colors   = new List<Color>();
 		var indices  = new List<int>();
 
 		var pos = new int[3];
 		var R = new int[]{ 1, (region.width + 1), (region.width + 1) * (region.depth + 1) };
-		var grid = new float[8];
+		var grid = new IBlock[8];
 		var bufNo = 1;
 
 		var vertexBuffer = new Vector3[R[2] * 2];
-
+		
 		for (pos[2] = 0; pos[2] < region.height - 1; pos[2]++, bufNo ^= 1, R[2] = -R[2]) {
 
 			// m is the pointer into the buffer we are going to use. 
@@ -74,15 +75,14 @@ public class SurfaceNetsMeshGenerator {
 				// Also calculate 8-bit mask, like in marching cubes, so we can speed up sign checks later.
 				var mask = 0;
 				var g = 0;
-				for (var zz = 0; zz < 2; zz++)
-				for (var yy = 0; yy < 2; yy++)
-				for (var xx = 0; xx < 2; xx++, g++) {
-					var blockPos = new BlockPos(region.start.x + pos[0] + xx,
-					                            region.start.y + pos[1] + yy,
-					                            region.start.z + pos[2] + zz);
-					var p = ((storage[blockPos].material == Terrain.EARTH) ? 1.0F : -1.0F);
-					grid[g] = p;
-					mask |= (p < 0.0F) ? (1 << g) : 0;
+				for (var z = 0; z < 2; z++)
+				for (var y = 0; y < 2; y++)
+				for (var x = 0; x < 2; x++, g++) {
+					var blockPos = new BlockPos(region.start.x + pos[0] + x,
+					                            region.start.y + pos[1] + y,
+					                            region.start.z + pos[2] + z);
+					grid[g] = storage[blockPos];
+					mask |= !grid[g].material.solid ? (1 << g) : 0;
 				}
 				
 				// Check for early termination if cell does not intersect boundary.
@@ -105,11 +105,11 @@ public class SurfaceNetsMeshGenerator {
 					eCount++;
 					
 					// Now find the point of intersection.
-					var e0 = _cubeEdges[i << 1];       // Unpack vertices.
+					var e0 = _cubeEdges[i << 1];           // Unpack vertices.
 					var e1 = _cubeEdges[(i << 1) + 1];
-					var g0 = grid[e0];                 // Unpack grid values.
-					var g1 = grid[e1];
-					var t  = g0 - g1;                  // Compute point of intersection.
+					var g0 = (grid[e0].amount - 2) / 3.0F; // Unpack grid values.
+					var g1 = (grid[e1].amount - 2) / 3.0F;
+					var t  = g0 - g1;                      // Compute point of intersection.
 
 					if (Mathf.Abs(t) <= 1e-6)
 						continue;
@@ -132,7 +132,7 @@ public class SurfaceNetsMeshGenerator {
 				// Add vertex to buffer.
 				vertexBuffer[m] = v;
 				
-				// Now we need to add faces together, to do this we just loop over 3 basis components.
+				// Now we need to add faces together, to do this we just loop over 3 basic components.
 				for (var i = 0; i < 3; i++) {
 					// The first three entries of the edge_mask count the crossings along the edge.
 					if((edgeMask & (1 << i)) == 0)
@@ -143,7 +143,7 @@ public class SurfaceNetsMeshGenerator {
 					var iv = (i + 2) % 3;
 					
 					// If we are on a boundary, skip it.
-					if ((pos[iu] == 0) || (pos[iv] == 0))
+					if ((pos[iu] < 0) || (pos[iv] < 0))
 						continue;
 					
 					// Otherwise, look up adjacent edges in buffer.
@@ -154,27 +154,20 @@ public class SurfaceNetsMeshGenerator {
 					var v2 = vertexBuffer[m - du];
 					var v3 = vertexBuffer[m - du - dv];
 					var v4 = vertexBuffer[m - dv];
-					
+
 					var normal1 = Vector3.Cross(v2 - v1, v3 - v1).normalized;
 					var normal2 = Vector3.Cross(v3 - v1, v4 - v1).normalized;
 
 					// Remember to flip orientation depending on the sign of the corner.
 					if ((mask & 1) == 0) {
-						AddFlatTriangle(vertices, normals, indices, v1, v2, v3, normal1);
-						AddFlatTriangle(vertices, normals, indices, v1, v3, v4, normal2);
+						var color = grid[0].material.color;
+						AddFlatTriangle(vertices, normals, colors, indices, v1, v2, v3, normal1, color);
+						AddFlatTriangle(vertices, normals, colors, indices, v1, v3, v4, normal2, color);
 					} else {
-						AddFlatTriangle(vertices, normals, indices, v4, v2, v1, -normal1);
-						AddFlatTriangle(vertices, normals, indices, v4, v3, v2, -normal2);
+						var color = grid[1 << i].material.color;
+						AddFlatTriangle(vertices, normals, colors, indices, v4, v2, v1, -normal1, color);
+						AddFlatTriangle(vertices, normals, colors, indices, v4, v3, v2, -normal2, color);
 					}
-					
-					/* One (average) normal per quad version:
-					var normal = (Vector3.Cross(v2 - v1, v3 - v1) +
-					              Vector3.Cross(v3 - v1, v4 - v1)).normalized;
-
-					// Remember to flip orientation depending on the sign of the corner.
-					if ((mask & 1) == 0) AddFlatQuad(vertices, normals, indices, v1, v2, v3, v4, normal);
-					else AddFlatQuad(vertices, normals, indices, v4, v3, v2, v1, -normal);
-					*/
 				}
 			}
 		}
@@ -182,6 +175,7 @@ public class SurfaceNetsMeshGenerator {
 		mesh.Clear();
 		mesh.vertices  = vertices.ToArray();
 		mesh.normals   = normals.ToArray();
+		mesh.colors    = colors.ToArray();
 		mesh.triangles = indices.ToArray();
 		mesh.Optimize();
 
@@ -189,23 +183,21 @@ public class SurfaceNetsMeshGenerator {
 
 	}
 
-	static void AddVertexNormal(List<Vector3> vertices, List<Vector3> normals, List<int> indices,
-	                     Vector3 vertex, Vector3 normal) {
+
+	static void AddVertex(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, List<int> indices,
+	                      Vector3 vertex, Vector3 normal, Color color) {
 		var index = vertices.Count;
 		vertices.Add(vertex);
 		normals.Add(normal);
+		colors.Add(color);
 		indices.Add(index);
 	}
-	static void AddFlatTriangle(List<Vector3> vertices, List<Vector3> normals, List<int> indices,
-	                     Vector3 v1, Vector3 v2, Vector3 v3, Vector3 normal) {
-		AddVertexNormal(vertices, normals, indices, v1, normal);
-		AddVertexNormal(vertices, normals, indices, v2, normal);
-		AddVertexNormal(vertices, normals, indices, v3, normal);
-	}
-	static void AddFlatQuad(List<Vector3> vertices, List<Vector3> normals, List<int> indices,
-	                 Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 normal) {
-		AddFlatTriangle(vertices, normals, indices, v1, v2, v3, normal);
-		AddFlatTriangle(vertices, normals, indices, v1, v3, v4, normal);
+
+	static void AddFlatTriangle(List<Vector3> vertices, List<Vector3> normals, List<Color> colors, List<int> indices,
+	                            Vector3 v1, Vector3 v2, Vector3 v3, Vector3 normal, Color color) {
+		AddVertex(vertices, normals, colors, indices, v1, normal, color);
+		AddVertex(vertices, normals, colors, indices, v2, normal, color);
+		AddVertex(vertices, normals, colors, indices, v3, normal, color);
 	}
 
 }
