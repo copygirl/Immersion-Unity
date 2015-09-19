@@ -12,6 +12,9 @@ public interface IBlock {
 
 	/// <summary> Gets or sets the material of this block. </summary>
 	BlockMaterial material { get; set; }
+
+	/// <summary> Gets or sets the amount of material in this block (1 to 4). </summary>
+	int amount { get; set; }
 	
 }
 

@@ -43,11 +43,30 @@ public class Terrain : IBlockStorage {
 		public IBlockStorage storage { get { return _terrain; } }
 
 		public BlockPos position { get; private set; }
+		
+		
+		int index { get {
+				var x = position.x - _terrain.region.start.x;
+				var y = position.y - _terrain.region.start.y;
+				var z = position.z - _terrain.region.start.z;
+				return (x + (y * _terrain.region.width) +
+				        (z * _terrain.region.width * _terrain.region.depth));
+			} }
+		
+		byte data {
+			get { return _terrain._blockData[index]; }
+			set { _terrain._blockData[index] = value; }
+		}
 
 
 		public BlockMaterial material {
-			get { return _terrain._idToMaterial[_terrain._blockData[GetIndex()]]; }
-			set { _terrain._blockData[GetIndex()] = _terrain._materialToId[value]; }
+			get { return _terrain._idToMaterial[data >> 2]; }
+			set { data = (byte)((_terrain._materialToId[value] << 2) | 0x03); }
+		}
+
+		public int amount {
+			get { return (data & 0x03) + 1; }
+			set { data = (byte)((data & 0xFD) | ((value - 1) & 0x03)); }
 		}
 
 
@@ -55,16 +74,7 @@ public class Terrain : IBlockStorage {
 			_terrain = terrain;
 			this.position = pos;
 		}
-
-
-		int GetIndex() {
-			var x = position.x - _terrain.region.start.x;
-			var y = position.y - _terrain.region.start.y;
-			var z = position.z - _terrain.region.start.z;
-			return (x + (y * _terrain.region.width) +
-			            (z * _terrain.region.width * _terrain.region.depth));
-		}
-
+		
 	}
 
 }
