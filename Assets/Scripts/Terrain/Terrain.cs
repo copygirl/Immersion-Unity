@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class Terrain : IBlockStorage {
 
-	public static readonly BlockMaterial AIR = new BlockMaterial(new Color(1.0f, 1.0f, 1.0f, 0.0f));
-	public static readonly BlockMaterial EARTH = new BlockMaterial(new Color(0.75f, 0.5f, 0.1f, 1.0f));
-
-
 	public const int MAX_BLOCK_MATERIALS = 32;
 
 	readonly BlockMaterial[] _idToMaterial = new BlockMaterial[MAX_BLOCK_MATERIALS];
@@ -18,7 +14,9 @@ public class Terrain : IBlockStorage {
 	public BlockRegion region { get; private set; }
 
 	public IBlock this[BlockPos pos] {
-		get { return (region.Contains(pos) ? new TerrainBlock(this, pos) : (IBlock)null); }
+		get { return (region.Contains(pos)
+				? (IBlock)new TerrainBlock(this, pos)
+				: (IBlock)new EmptyBlock(this, pos)); }
 	}
 
 
@@ -30,8 +28,8 @@ public class Terrain : IBlockStorage {
 
 		_blockData = new byte[width * depth * height];
 
-		_idToMaterial[0] = AIR;   _materialToId[AIR]   = 0;
-		_idToMaterial[1] = EARTH; _materialToId[EARTH] = 1;
+		_idToMaterial[0] = BlockMaterial.AIR;   _materialToId[BlockMaterial.AIR]   = 0;
+		_idToMaterial[1] = BlockMaterial.EARTH; _materialToId[BlockMaterial.EARTH] = 1;
 	}
 
 
