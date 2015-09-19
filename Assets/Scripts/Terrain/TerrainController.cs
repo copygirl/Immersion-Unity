@@ -24,14 +24,13 @@ public class TerrainController : MonoBehaviour {
 	Terrain GenerateTerrain(int width, int depth, int height) {
 		var terrain = new Terrain(width, depth, height);
 
+		IBlock block;
 		for (var x = terrain.region.start.x; x <= terrain.region.end.x; x++)
 			for (var z = terrain.region.start.z; z <= terrain.region.end.z; z++) {
-			terrain[new BlockPos(x, terrain.region.start.y + 10, z)].material = Terrain.EARTH;
-			if (Random.value > 0.1f) {
-				terrain[new BlockPos(x, terrain.region.start.y + 11, z)].material = Terrain.EARTH;
-				if (Random.value > 0.9f)
-					terrain[new BlockPos(x, terrain.region.start.y + 12, z)].material = Terrain.EARTH;
-			}
+			terrain[new BlockPos(x, terrain.region.start.y + 9, z)].material = BlockMaterial.EARTH;
+			block = terrain[new BlockPos(x, terrain.region.start.y + 10, z)];
+			block.material = BlockMaterial.EARTH;
+			block.amount = Random.Range(0, 4);
 		}
 
 		return terrain;
