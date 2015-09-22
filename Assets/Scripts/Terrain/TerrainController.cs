@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshCollider))]
@@ -20,17 +21,20 @@ public class TerrainController : MonoBehaviour {
 		GetComponent<MeshCollider>().sharedMesh = mesh;
 	}
 
-
 	Terrain GenerateTerrain(int width, int depth, int height) {
 		var terrain = new Terrain(width, depth, height);
 
 		IBlock block;
 		for (var x = terrain.region.start.x; x <= terrain.region.end.x; x++)
-			for (var z = terrain.region.start.z; z <= terrain.region.end.z; z++) {
-			terrain[new BlockPos(x, terrain.region.start.y + 9, z)].material = BlockMaterial.EARTH;
-			block = terrain[new BlockPos(x, terrain.region.start.y + 10, z)];
-			block.material = BlockMaterial.EARTH;
-			block.amount = Random.Range(0, 4);
+		for (var z = terrain.region.start.z; z <= terrain.region.end.z; z++) {
+			var h = Mathf.PerlinNoise((x - terrain.region.start.x) / 40.0F,
+			                          (z - terrain.region.start.z) / 40.0F) * 8;
+			for (int y = terrain.region.start.y; y < terrain.region.start.y + h; y++) {
+				block = terrain[new BlockPos(x, y, z)];
+				block.material = h > 3.5F ? BlockMaterial.EARTH : BlockMaterial.SAND;
+				block.amount = 1 + (int)Mathf.Min(BlockData.MAX_AMOUNT - 1,
+						(h - (y - terrain.region.start.y)) * BlockData.MAX_AMOUNT);
+			}
 		}
 
 		return terrain;

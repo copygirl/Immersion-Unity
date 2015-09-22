@@ -13,7 +13,8 @@ public interface IBlock {
 	/// <summary> Gets or sets the material of this block. </summary>
 	BlockMaterial material { get; set; }
 
-	/// <summary> Gets or sets the amount of material in this block (1 to 4). </summary>
+	/// <summary> Gets or sets the amount of material in this block.
+	///           Valid values are 1 to BlockData.MAX_AMOUNT. </summary>
 	int amount { get; set; }
 	
 }

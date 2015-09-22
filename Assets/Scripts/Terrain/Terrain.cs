@@ -45,6 +45,7 @@ public class Terrain : IBlockStorage, IRawBlockAccess {
 
 		_idToMaterial[0] = BlockMaterial.AIR;   _materialToId[BlockMaterial.AIR]   = 0;
 		_idToMaterial[1] = BlockMaterial.EARTH; _materialToId[BlockMaterial.EARTH] = 1;
+		_idToMaterial[2] = BlockMaterial.SAND;  _materialToId[BlockMaterial.SAND]  = 2;
 	}
 
 
