@@ -61,7 +61,6 @@ public class SurfaceNetsMeshGenerator {
 		var bufNo = 1;
 
 		var vertexBuffer = new Vector3[R[2] * 2];
-		var offset = new Vector3(access.width / 2.0F, access.depth / 2.0F, access.height / 2.0F);
 		
 		for (pos[2] = 0; pos[2] < access.height - 1; pos[2]++, n += access.width, bufNo ^= 1, R[2] = -R[2]) {
 
@@ -126,7 +125,7 @@ public class SurfaceNetsMeshGenerator {
 					v[i] = pos[i] + s * v[i];
 				
 				// Add vertex to buffer.
-				vertexBuffer[m] = v - offset;
+				vertexBuffer[m] = v;
 				
 				// Now we need to add faces together, to do this we just loop over 3 basic components.
 				for (var i = 0; i < 3; i++) {

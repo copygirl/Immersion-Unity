@@ -27,11 +27,11 @@ public abstract class Chunk : IRawBlockAccess {
 	}
 
 
+	public static int GetIndex(int x, int y, int z) {
+		return ((x & 0x0F) + ((y & 0x0F) * WIDTH) + ((z & 0x0F) * WIDTH * DEPTH));
+	}
 	public static int GetIndex(BlockPos pos) {
-		var x = pos.x & 0x0F;
-		var y = pos.y & 0x0F;
-		var z = pos.z & 0x0F;
-		return (x + y * WIDTH + z * WIDTH * DEPTH);
+		return GetIndex(pos.x, pos.y, pos.z);
 	}
 
 }
