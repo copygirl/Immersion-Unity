@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Terrain : IBlockStorage, IRawBlockAccess, IBlockMaterialLookup {
+public class Terrain : IBlockStorage, IBlockMaterialLookup {
 
 	readonly BlockMaterial[] _idToMaterial =
 		new BlockMaterial[BlockData.MAX_MATERIAL_IDS];
 	readonly Dictionary<BlockMaterial, byte> _materialToId =
 		new Dictionary<BlockMaterial, byte>(BlockData.MAX_MATERIAL_IDS);
+
+	readonly Dictionary<ChunkPos, TerrainChunk> _chunks =
+		new Dictionary<ChunkPos, TerrainChunk>();
 
 
 	#region IBlockStorage implementation
@@ -16,23 +19,27 @@ public class Terrain : IBlockStorage, IRawBlockAccess, IBlockMaterialLookup {
 
 	public IBlock this[BlockPos pos] {
 		get {
-			return (region.Contains (pos)
-			              ? (IBlock)new TerrainBlock (this, pos)
-			              : (IBlock)new EmptyBlock (this, pos));
+			var chunk = this[ChunkPos.FromBlockPos(pos)];
+			return new TerrainBlock(this, chunk, pos);
 		}
 	}
 
 	#endregion
 
-	#region IRawBlockAccess implementation
-	
-	public int width { get { return region.width; } }
-	public int depth { get { return region.depth; } }
-	public int height { get { return region.height; } }
-	
-	public BlockData[] blockData { get; private set; }
 
-	#endregion
+	public Chunk this[ChunkPos pos] {
+		get {
+			TerrainChunk chunk;
+			return (_chunks.TryGetValue(pos, out chunk)
+			        ? (Chunk)chunk : new EmptyChunk(this, pos, default(BlockData)));
+		}
+		set {
+			// TODO: Refine this.
+			if (value != null)
+				_chunks[pos] = (TerrainChunk)value;
+			else _chunks.Remove(pos);
+		}
+	}
 
 
 	public Terrain(int width, int depth, int height) {
@@ -40,8 +47,6 @@ public class Terrain : IBlockStorage, IRawBlockAccess, IBlockMaterialLookup {
 		int y = -depth / 2;
 		int z = -height / 2;
 		region = new BlockRegion(x, y, z, width + x - 1, depth + y - 1, height + z - 1);
-
-		blockData = new BlockData[width * depth * height];
 
 		RegisterMaterial(BlockMaterial.AIR);
 		RegisterMaterial(BlockMaterial.EARTH);

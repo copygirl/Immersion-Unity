@@ -1,4 +1,5 @@
 
+// TODO: Currently not being used due to EmptyChunk. Remove?
 /// <summary> Empty implementation of IBlock interface.
 ///           References a block outside the boundary of the IBlockStorage.
 ///           Returns AIR as its material, setting the material does nothing. </summary>
@@ -20,7 +21,7 @@ public class EmptyBlock : IBlock {
 	}
 
 
-	public EmptyBlock(IBlockStorage storage, BlockPos pos) : this() {
+	public EmptyBlock(IBlockStorage storage, BlockPos pos) {
 		this.storage = storage;
 		this.position = pos;
 	}

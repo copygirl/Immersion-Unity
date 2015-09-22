@@ -8,7 +8,6 @@ public interface IRawBlockAccess {
 	int depth { get; }
 	int height { get; }
 
-	/// <summary> Returns the raw block data array. </summary>
-	BlockData[] blockData { get; }
+	BlockData this[int index] { get; set; }
 
 }

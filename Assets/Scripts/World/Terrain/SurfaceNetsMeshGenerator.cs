@@ -77,7 +77,7 @@ public class SurfaceNetsMeshGenerator {
 				for (var z = 0; z < 2; z++, idx += access.width * (access.depth - 2))
 				for (var y = 0; y < 2; y++, idx += (access.width - 2))
 				for (var x = 0; x < 2; x++, g++, idx++) {
-					grid[g] = access.blockData[idx];
+					grid[g] = access[idx];
 					mask |= grid[g].isSolid ? (1 << g) : 0;
 				}
 				
