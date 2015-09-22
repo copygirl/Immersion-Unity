@@ -391,6 +391,7 @@ GameObject:
   - 64: {fileID: 1171773469}
   - 33: {fileID: 1171773467}
   - 114: {fileID: 1171773466}
+  - 114: {fileID: 1171773471}
   m_Layer: 0
   m_Name: Terrain
   m_TagString: Untagged
@@ -410,7 +411,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   width: 80
-  depth: 32
+  depth: 24
   height: 80
 --- !u!33 &1171773467
 MeshFilter:
@@ -467,6 +468,20 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingOrder: 0
+--- !u!114 &1171773471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1171773465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7ad6da70797ce0468bd63deb007d451, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  width: 80
+  depth: 24
+  height: 80
 --- !u!1 &1185981932
 GameObject:
   m_ObjectHideFlags: 0

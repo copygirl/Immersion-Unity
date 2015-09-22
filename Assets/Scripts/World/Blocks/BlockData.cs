@@ -3,7 +3,7 @@ using System;
 /// <summary> Low level data structure representing a single block. </summary>
 public struct BlockData {
 
-	public const int MAX_MATERIAL_IDS = 32;
+	public const int MAX_MATERIAL_IDS = 64;
 	public const int MAX_AMOUNT = 4;
 
 	byte _data;
