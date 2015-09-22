@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Terrain : IBlockStorage, IRawBlockAccess {
+public class Terrain : IBlockStorage, IRawBlockAccess, IBlockMaterialLookup {
 
-	internal readonly BlockMaterial[] _idToMaterial =
+	readonly BlockMaterial[] _idToMaterial =
 		new BlockMaterial[BlockData.MAX_MATERIAL_IDS];
-	internal readonly Dictionary<BlockMaterial, byte> _materialToId =
+	readonly Dictionary<BlockMaterial, byte> _materialToId =
 		new Dictionary<BlockMaterial, byte>(BlockData.MAX_MATERIAL_IDS);
 
 
@@ -43,10 +43,30 @@ public class Terrain : IBlockStorage, IRawBlockAccess {
 
 		blockData = new BlockData[width * depth * height];
 
-		_idToMaterial[0] = BlockMaterial.AIR;   _materialToId[BlockMaterial.AIR]   = 0;
-		_idToMaterial[1] = BlockMaterial.EARTH; _materialToId[BlockMaterial.EARTH] = 1;
-		_idToMaterial[2] = BlockMaterial.SAND;  _materialToId[BlockMaterial.SAND]  = 2;
+		RegisterMaterial(BlockMaterial.AIR);
+		RegisterMaterial(BlockMaterial.EARTH);
+		RegisterMaterial(BlockMaterial.SAND);
 	}
+
+
+	#region IBlockMaterialLookup implementation
+
+	public int GetMaterialId(BlockMaterial material) {
+		return _materialToId[material];
+	}
+
+	public BlockMaterial GetMaterial(int materialId) {
+		return _idToMaterial[materialId];
+	}
+
+	public int RegisterMaterial(BlockMaterial material) {
+		var id = (byte)_materialToId.Count;
+		_idToMaterial[id] = material;
+		_materialToId[material] = id;
+		return id;
+	}
+
+	#endregion
 
 
 	#region TerrainBlock struct definition
@@ -71,8 +91,8 @@ public class Terrain : IBlockStorage, IRawBlockAccess {
 
 
 		public BlockMaterial material {
-			get { return _terrain._idToMaterial[_terrain.blockData[index].material]; }
-			set { _terrain.blockData[index] = new BlockData(_terrain._materialToId[value], _terrain.blockData[index].amount); }
+			get { return _terrain.GetMaterial(_terrain.blockData[index].material); }
+			set { _terrain.blockData[index] = new BlockData(_terrain.GetMaterialId(value), _terrain.blockData[index].amount); }
 		}
 		
 		public int amount {

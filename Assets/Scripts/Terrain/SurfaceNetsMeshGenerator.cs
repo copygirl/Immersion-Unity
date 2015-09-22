@@ -47,7 +47,7 @@ public class SurfaceNetsMeshGenerator {
 	}
 
 
-	public Mesh Generate(Mesh mesh, Terrain terrain) {
+	public Mesh Generate(Mesh mesh, IRawBlockAccess access, IBlockMaterialLookup lookup) {
 
 		var vertices = new List<Vector3>();
 		var normals  = new List<Vector3>();
@@ -56,28 +56,28 @@ public class SurfaceNetsMeshGenerator {
 
 		var n = 0;
 		var pos = new int[3];
-		var R = new int[]{ 1, (terrain.width + 1), (terrain.width + 1) * (terrain.depth + 1) };
+		var R = new int[]{ 1, (access.width + 1), (access.width + 1) * (access.depth + 1) };
 		var grid = new BlockData[8];
 		var bufNo = 1;
 
 		var vertexBuffer = new Vector3[R[2] * 2];
-		var offset = new Vector3(terrain.width / 2.0F, terrain.depth / 2.0F, terrain.height / 2.0F);
+		var offset = new Vector3(access.width / 2.0F, access.depth / 2.0F, access.height / 2.0F);
 		
-		for (pos[2] = 0; pos[2] < terrain.height - 1; pos[2]++, n += terrain.width, bufNo ^= 1, R[2] = -R[2]) {
+		for (pos[2] = 0; pos[2] < access.height - 1; pos[2]++, n += access.width, bufNo ^= 1, R[2] = -R[2]) {
 
 			// m is the pointer into the buffer we are going to use. 
-			var m = 1 + (terrain.width + 1) * (1 + bufNo * (terrain.depth + 1));
+			var m = 1 + (access.width + 1) * (1 + bufNo * (access.depth + 1));
 
-			for (pos[1] = 0; pos[1] < terrain.depth - 1; pos[1]++, n++, m += 2)
-			for (pos[0] = 0; pos[0] < terrain.width - 1; pos[0]++, n++, m++) {
+			for (pos[1] = 0; pos[1] < access.depth - 1; pos[1]++, n++, m += 2)
+			for (pos[0] = 0; pos[0] < access.width - 1; pos[0]++, n++, m++) {
 				
 				// Read in 8 field values around this vertex and store them in an array.
 				// Also calculate 8-bit mask, like in marching cubes, so we can speed up sign checks later.
 				int mask = 0, g = 0, idx = n;
-				for (var z = 0; z < 2; z++, idx += terrain.width * (terrain.depth - 2))
-				for (var y = 0; y < 2; y++, idx += (terrain.width - 2))
+				for (var z = 0; z < 2; z++, idx += access.width * (access.depth - 2))
+				for (var y = 0; y < 2; y++, idx += (access.width - 2))
 				for (var x = 0; x < 2; x++, g++, idx++) {
-					grid[g] = terrain.blockData[idx];
+					grid[g] = access.blockData[idx];
 					mask |= grid[g].isSolid ? (1 << g) : 0;
 				}
 				
@@ -156,11 +156,11 @@ public class SurfaceNetsMeshGenerator {
 
 					// Remember to flip orientation depending on the sign of the corner.
 					if ((mask & 1) != 0) {
-						var color = terrain._idToMaterial[grid[0].material].color;
+						var color = lookup.GetMaterial(grid[0].material).color;
 						AddFlatTriangle(vertices, normals, colors, indices, v1, v2, v3, normal1, color);
 						AddFlatTriangle(vertices, normals, colors, indices, v1, v3, v4, normal2, color);
 					} else {
-						var color = terrain._idToMaterial[grid[1 << i].material].color;
+						var color = lookup.GetMaterial(grid[1 << i].material).color;
 						AddFlatTriangle(vertices, normals, colors, indices, v4, v2, v1, -normal1, color);
 						AddFlatTriangle(vertices, normals, colors, indices, v4, v3, v2, -normal2, color);
 					}

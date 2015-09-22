@@ -15,7 +15,7 @@ public class TerrainController : MonoBehaviour {
 
 	void Start() {
 		var terrain = GenerateTerrain(width, depth, height);
-		var mesh = new SurfaceNetsMeshGenerator().Generate(new Mesh(), terrain);
+		var mesh = new SurfaceNetsMeshGenerator().Generate(new Mesh(), terrain, terrain);
 
 		GetComponent<MeshFilter>().mesh = mesh;
 		GetComponent<MeshCollider>().sharedMesh = mesh;
