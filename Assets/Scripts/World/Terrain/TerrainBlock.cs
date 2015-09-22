@@ -1,37 +1,55 @@
 
-public struct TerrainBlock : IBlock {
-	
+/// <summary> IBlock implementation for Terrain / TerrainChunk blocks. </summary>
+internal class TerrainBlock : IBlock {
+
 	readonly Terrain _terrain;
-	
+	readonly IRawBlockAccess _access;
+	readonly int _index;
 	
 	public IBlockStorage storage { get { return _terrain; } }
-	
 	public BlockPos position { get; private set; }
 	
 	
-	int index { get {
-			var x = position.x - _terrain.region.start.x;
-			var y = position.y - _terrain.region.start.y;
-			var z = position.z - _terrain.region.start.z;
-			return (x + (y * _terrain.region.width) +
-			        (z * _terrain.region.width * _terrain.region.depth));
-		} }
-	
-	
 	public BlockMaterial material {
-		get { return _terrain.GetMaterial(_terrain.blockData[index].material); }
-		set { _terrain.blockData[index] = new BlockData(_terrain.GetMaterialId(value), _terrain.blockData[index].amount); }
+		get { return _terrain.GetMaterial(_access.blockData[_index].material); }
+		set { _access.blockData[_index] = new BlockData(_terrain.GetMaterialId(value),
+		                                                _access.blockData[_index].amount); }
 	}
 	
 	public int amount {
-		get { return _terrain.blockData[index].amount; }
-		set { _terrain.blockData[index] = new BlockData(_terrain.blockData[index].material, value); }
+		get { return _access.blockData[_index].amount; }
+		set { _access.blockData[_index] = new BlockData(_access.blockData[_index].material, value); }
 	}
 	
 	
-	public TerrainBlock(Terrain terrain, BlockPos pos) : this() {
-		_terrain = terrain;
-		this.position = pos;
+	public TerrainBlock(Terrain terrain, BlockPos pos,
+	                    IRawBlockAccess access, int index) {
+		_access = terrain;
+		position = pos;
+		_access = access;
+		_index = index;
 	}
+
+
+	#region ToString, Equals and GetHashCode
+
+	public override string ToString() {
+		return string.Format(
+			"[Block {1}, {2}, {3}/{4}]",
+			position, material, amount, BlockData.MAX_AMOUNT);
+	}
+
+	public override bool Equals(object obj) {
+		var block = (obj as IBlock);
+		return ((block != null) &&
+		        (block.storage == storage) &&
+		        (block.position == position));
+	}
+
+	public override int GetHashCode() {
+		return HashHelper.GetHashCode(storage, position);
+	}
+
+	#endregion
 	
 }
