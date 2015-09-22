@@ -3,29 +3,29 @@
 internal class TerrainBlock : IBlock {
 
 	readonly Terrain _terrain;
-	readonly IRawBlockAccess _access;
+	readonly IChunk _chunk;
 	
 	public IBlockStorage storage { get { return _terrain; } }
 	public BlockPos position { get; private set; }
 	
 	
 	public BlockMaterial material {
-		get { return _terrain.GetMaterial(_access[Chunk.GetIndex(position)].material); }
-		set { var index = Chunk.GetIndex(position);
-		      _access[index] = new BlockData(_terrain.GetMaterialId(value),
-		                                     _access[index].amount); }
+		get { return _terrain.GetMaterial(_chunk[_chunk.GetIndex(position)].material); }
+		set { var index = _chunk.GetIndex(position);
+		      _chunk[index] = new BlockData(_terrain.GetMaterialId(value),
+		                                     _chunk[index].amount); }
 	}
 	
 	public int amount {
-		get { return _access[Chunk.GetIndex(position)].amount; }
-		set { var index = Chunk.GetIndex(position);
-		      _access[index] = new BlockData(_access[index].material, value); }
+		get { return _chunk[_chunk.GetIndex(position)].amount; }
+		set { var index = _chunk.GetIndex(position);
+		      _chunk[index] = new BlockData(_chunk[index].material, value); }
 	}
 	
 	
-	public TerrainBlock(Terrain terrain, IRawBlockAccess access, BlockPos pos) {
+	public TerrainBlock(Terrain terrain, IChunk access, BlockPos pos) {
 		_terrain = terrain;
-		_access = access;
+		_chunk = access;
 		position = pos;
 	}
 

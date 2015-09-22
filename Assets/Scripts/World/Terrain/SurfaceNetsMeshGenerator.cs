@@ -8,7 +8,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SurfaceNetsMeshGenerator {
+public static class SurfaceNetsMeshGenerator {
 
 	static readonly int[] _cubeEdges;
 	static readonly int[] _edgeTable;
@@ -47,7 +47,7 @@ public class SurfaceNetsMeshGenerator {
 	}
 
 
-	public Mesh Generate(Mesh mesh, IRawBlockAccess access, IBlockMaterialLookup lookup) {
+	public static Mesh Generate(Mesh mesh, IRawBlockAccess access, IBlockMaterialLookup lookup) {
 
 		var vertices = new List<Vector3>();
 		var normals  = new List<Vector3>();
@@ -180,7 +180,7 @@ public class SurfaceNetsMeshGenerator {
 
 
 	static float GetGridValue(BlockData block) {
-		return (block.isSolid ? (float)block.amount / BlockData.MAX_AMOUNT : 0.0F);
+		return (block.isSolid ? ((float)block.amount / BlockData.MAX_AMOUNT) : 0.0F);
 	}
 
 

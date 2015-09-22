@@ -1,37 +1,14 @@
 
-public abstract class Chunk : IRawBlockAccess {
+public static class Chunk {
 
-	public const int WIDTH  = 16;
-	public const int DEPTH  = 16;
-	public const int HEIGHT = 16;
+	public const int SIZE = 16;
 
 
-	public readonly Terrain terrain;
-	public readonly ChunkPos position;
-
-
-	#region IRawBlockAccess implementation
-
-	int IRawBlockAccess.width { get { return WIDTH; } }
-	int IRawBlockAccess.depth { get { return DEPTH; } }
-	int IRawBlockAccess.height { get { return HEIGHT; } }
-
-	public abstract BlockData this[int index] { get; set; }
-
-	#endregion
-
-
-	public Chunk(Terrain terrain, ChunkPos pos) {
-		this.terrain = terrain;
-		position = pos;
+	public static int GetIndex(this IChunk chunk, int x, int y, int z) {
+		return (x + (y * chunk.width) + (z * chunk.width * chunk.depth));
 	}
-
-
-	public static int GetIndex(int x, int y, int z) {
-		return ((x & 0x0F) + ((y & 0x0F) * WIDTH) + ((z & 0x0F) * WIDTH * DEPTH));
-	}
-	public static int GetIndex(BlockPos pos) {
-		return GetIndex(pos.x, pos.y, pos.z);
+	public static int GetIndex(this IChunk chunk, BlockPos pos) {
+		return chunk.GetIndex(pos.x & 0x0F, pos.y & 0x0F, pos.z & 0x0F);
 	}
 
 }

@@ -1,3 +1,4 @@
+using UnityEngine;
 
 public struct ChunkPos {
 
@@ -14,6 +15,10 @@ public struct ChunkPos {
 
 	public BlockPos ToBlockPos() {
 		return new BlockPos(x << 4, y << 4, z << 4);
+	}
+
+	public Vector3 ToVector3() {
+		return new Vector3(x << 4, y << 4, z << 4);
 	}
 
 
