@@ -1,23 +1,38 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Terrain : IBlockStorage {
+public class Terrain : IBlockStorage, IRawBlockAccess {
 
-	public const int MAX_BLOCK_MATERIALS = 32;
+	internal readonly BlockMaterial[] _idToMaterial =
+		new BlockMaterial[BlockData.MAX_MATERIAL_IDS];
+	internal readonly Dictionary<BlockMaterial, byte> _materialToId =
+		new Dictionary<BlockMaterial, byte>(BlockData.MAX_MATERIAL_IDS);
 
-	readonly BlockMaterial[] _idToMaterial = new BlockMaterial[MAX_BLOCK_MATERIALS];
-	readonly Dictionary<BlockMaterial, byte> _materialToId = new Dictionary<BlockMaterial, byte>(MAX_BLOCK_MATERIALS);
 
-	readonly byte[] _blockData;
-
+	#region IBlockStorage implementation
 
 	public BlockRegion region { get; private set; }
 
 	public IBlock this[BlockPos pos] {
-		get { return (region.Contains(pos)
-				? (IBlock)new TerrainBlock(this, pos)
-				: (IBlock)new EmptyBlock(this, pos)); }
+		get {
+			return (region.Contains (pos)
+			              ? (IBlock)new TerrainBlock (this, pos)
+			              : (IBlock)new EmptyBlock (this, pos));
+		}
 	}
+
+	#endregion
+
+	#region IRawBlockAccess implementation
+	
+	public int width { get { return region.width; } }
+	public int depth { get { return region.depth; } }
+	public int height { get { return region.height; } }
+	
+	public BlockData[] blockData { get; private set; }
+
+	#endregion
 
 
 	public Terrain(int width, int depth, int height) {
@@ -26,12 +41,14 @@ public class Terrain : IBlockStorage {
 		int z = -height / 2;
 		region = new BlockRegion(x, y, z, width + x - 1, depth + y - 1, height + z - 1);
 
-		_blockData = new byte[width * depth * height];
+		blockData = new BlockData[width * depth * height];
 
 		_idToMaterial[0] = BlockMaterial.AIR;   _materialToId[BlockMaterial.AIR]   = 0;
 		_idToMaterial[1] = BlockMaterial.EARTH; _materialToId[BlockMaterial.EARTH] = 1;
 	}
 
+
+	#region TerrainBlock struct definition
 
 	struct TerrainBlock : IBlock {
 
@@ -41,8 +58,8 @@ public class Terrain : IBlockStorage {
 		public IBlockStorage storage { get { return _terrain; } }
 
 		public BlockPos position { get; private set; }
-		
-		
+
+
 		int index { get {
 				var x = position.x - _terrain.region.start.x;
 				var y = position.y - _terrain.region.start.y;
@@ -50,21 +67,16 @@ public class Terrain : IBlockStorage {
 				return (x + (y * _terrain.region.width) +
 				        (z * _terrain.region.width * _terrain.region.depth));
 			} }
-		
-		byte data {
-			get { return _terrain._blockData[index]; }
-			set { _terrain._blockData[index] = value; }
-		}
 
 
 		public BlockMaterial material {
-			get { return _terrain._idToMaterial[data >> 2]; }
-			set { data = (byte)((_terrain._materialToId[value] << 2) | 0x03); }
+			get { return _terrain._idToMaterial[_terrain.blockData[index].material]; }
+			set { _terrain.blockData[index] = new BlockData(_terrain._materialToId[value], _terrain.blockData[index].amount); }
 		}
-
+		
 		public int amount {
-			get { return (data & 0x03) + 1; }
-			set { data = (byte)((data & 0xFD) | ((value - 1) & 0x03)); }
+			get { return _terrain.blockData[index].amount; }
+			set { _terrain.blockData[index] = new BlockData(_terrain.blockData[index].material, value); }
 		}
 
 
@@ -72,7 +84,9 @@ public class Terrain : IBlockStorage {
 			_terrain = terrain;
 			this.position = pos;
 		}
-		
+
 	}
+
+	#endregion
 
 }
