@@ -46,6 +46,7 @@ public class Terrain : MonoBehaviour, IBlockStorage, IBlockMaterialLookup {
 		chunk.transform.localRotation = Quaternion.identity;
 		chunk.transform.localScale = Vector3.one;
 
+		_chunks[pos] = chunk;
 		return chunk;
 	}
 
