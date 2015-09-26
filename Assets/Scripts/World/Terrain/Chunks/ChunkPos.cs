@@ -22,6 +22,11 @@ public struct ChunkPos {
 	}
 
 
+	public ChunkPos Relative(int x, int y, int z) {
+		return new ChunkPos(this.x + x, this.y + y, this.z);
+	}
+
+
 	#region ToString, Equals and GetHashCode
 	
 	public override string ToString() {

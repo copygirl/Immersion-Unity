@@ -6,3 +6,11 @@ public interface IChunk : IRawBlockAccess {
 	ChunkPos position { get; }
 
 }
+
+public static class ChunkExtensions {
+
+	public static IChunk Relative(this IChunk chunk, int x, int y, int z) {
+		return chunk.terrain[chunk.position.Relative(x, y, z)];
+	}
+
+}
