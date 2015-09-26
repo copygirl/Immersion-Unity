@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public class TerrainChunk : MonoBehaviour, IChunk {
 
-	readonly BlockData[] _data = new BlockData[(Chunk.SIZE + 1) * (Chunk.SIZE + 1) * (Chunk.SIZE + 1)];
+	readonly BlockData[] _data = new BlockData[Chunk.SIZE * Chunk.SIZE * Chunk.SIZE];
 
 	Mesh _mesh = null;
 	
@@ -20,9 +20,9 @@ public class TerrainChunk : MonoBehaviour, IChunk {
 
 	#region IRawBlockAccess implementation
 
-	public int width { get { return Chunk.SIZE + 1; } }
-	public int depth { get { return Chunk.SIZE + 1; } }
-	public int height { get { return Chunk.SIZE + 1; } }
+	public int width { get { return Chunk.SIZE; } }
+	public int depth { get { return Chunk.SIZE ; } }
+	public int height { get { return Chunk.SIZE; } }
 	
 	public BlockData this[int index] {
 		get { return _data[index]; }
@@ -39,7 +39,13 @@ public class TerrainChunk : MonoBehaviour, IChunk {
 			GetComponent<MeshRenderer>().material =
 				terrain.GetComponent<MeshRenderer>().material;
 		}
-		SurfaceNetsMeshGenerator.Generate(_mesh, this, terrain);
+		var access = new IRawBlockAccess[8];
+		for (var i = 0; i < access.Length; i++)
+			access[i] = terrain[
+				new ChunkPos(position.x + (i & 1),
+				             position.y + ((i >> 1) & 1),
+				             position.z + ((i >> 2) & 1))];
+		SurfaceNetsMeshGenerator.Generate(_mesh, access, terrain);
 
 		// This should also update the collision mesh properly.
 		GetComponent<MeshCollider>().sharedMesh = _mesh;

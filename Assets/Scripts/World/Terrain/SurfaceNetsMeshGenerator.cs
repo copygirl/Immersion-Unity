@@ -1,7 +1,8 @@
 //
 // "Surface Nets" mesh generator
 // Information: http://0fps.net/2012/07/12/smooth-voxel-terrain-part-2/
-// (Adapted from Mikola Lysenko's Javascript version.)
+// (Adapted from Mikola Lysenko's Javascript version.
+//  Huge thanks to odomobo who helped me fix a stupid mistake.)
 // Source: https://github.com/mikolalysenko/mikolalysenko.github.com/blob/master/Isosurface/js/surfacenets.js
 //
 
@@ -47,36 +48,44 @@ public static class SurfaceNetsMeshGenerator {
 	}
 
 
-	public static Mesh Generate(Mesh mesh, IRawBlockAccess access, IBlockMaterialLookup lookup) {
+	// TODO: Attempt to speed this up a little.
+	public static Mesh Generate(Mesh mesh, IRawBlockAccess[] access, IBlockMaterialLookup lookup) {
 
 		var vertices = new List<Vector3>();
 		var normals  = new List<Vector3>();
 		var colors   = new List<Color>();
 		var indices  = new List<int>();
 
-		var n = 0;
-		var pos = new int[3];
-		var R = new int[]{ 1, (access.width + 1), (access.width + 1) * (access.depth + 1) };
-		var grid = new BlockData[8];
-		var bufNo = 1;
+		int width, depth, height;
+		width = depth = height = Chunk.SIZE + 1;
 
-		var vertexBuffer = new Vector3[R[2] * 2];
+		var pos = new int[3];
+		var R = new int[]{ 1, width, width * depth };
+		var grid = new BlockData[8];
 		
-		for (pos[2] = 0; pos[2] < access.height - 1; pos[2]++, n += access.width, bufNo ^= 1, R[2] = -R[2]) {
+		Vector3[] _vertexBuffer = new Vector3[R[2] * 2];
+
+		// March over the voxel grid.
+		for (pos[2] = 0; pos[2] < height; pos[2]++, R[2] = -R[2]) {
 
 			// m is the pointer into the buffer we are going to use. 
-			var m = 1 + (access.width + 1) * (1 + bufNo * (access.depth + 1));
+			var m = (~pos[2] & 1) * width * depth;
 
-			for (pos[1] = 0; pos[1] < access.depth - 1; pos[1]++, n++, m += 2)
-			for (pos[0] = 0; pos[0] < access.width - 1; pos[0]++, n++, m++) {
-				
+			for (pos[1] = 0; pos[1] < depth; pos[1]++)
+			for (pos[0] = 0; pos[0] < width; pos[0]++, m++) {
+
 				// Read in 8 field values around this vertex and store them in an array.
 				// Also calculate 8-bit mask, like in marching cubes, so we can speed up sign checks later.
-				int mask = 0, g = 0, idx = n;
-				for (var z = 0; z < 2; z++, idx += access.width * (access.depth - 2))
-				for (var y = 0; y < 2; y++, idx += (access.width - 2))
-				for (var x = 0; x < 2; x++, g++, idx++) {
-					grid[g] = access[idx];
+				int mask = 0, g = 0;
+				for (var z = 0; z < 2; z++)
+				for (var y = 0; y < 2; y++)
+				for (var x = 0; x < 2; x++, g++) {
+					var accessIndex = 0;
+					var index = ((pos[0] + x) & 0xF) | (((pos[1] + y) & 0xF) << 4) | (((pos[2] + z) & 0xF) << 8);
+					if (pos[0] + x > Chunk.SIZE - 1) accessIndex |= 1;
+					if (pos[1] + y > Chunk.SIZE - 1) accessIndex |= 2;
+					if (pos[2] + z > Chunk.SIZE - 1) accessIndex |= 4;
+					grid[g] = access[accessIndex][index];
 					mask |= grid[g].isSolid ? (1 << g) : 0;
 				}
 				
@@ -108,7 +117,7 @@ public static class SurfaceNetsMeshGenerator {
 
 					if (Mathf.Abs(t) <= 1e-6)
 						continue;
-					// t = g0 / t;
+					//t = g0 / t;
 					
 					// Interpolate vertices and add up intersections (this can be done without multiplying).
 					for (int j = 0, k = 1; j < 3; j++, k <<= 1) {
@@ -125,12 +134,12 @@ public static class SurfaceNetsMeshGenerator {
 					v[i] = pos[i] + s * v[i];
 				
 				// Add vertex to buffer.
-				vertexBuffer[m] = v;
+				_vertexBuffer[m] = v;
 				
 				// Now we need to add faces together, to do this we just loop over 3 basic components.
 				for (var i = 0; i < 3; i++) {
 					// The first three entries of the edge_mask count the crossings along the edge.
-					if((edgeMask & (1 << i)) == 0)
+					if ((edgeMask & (1 << i)) == 0)
 						continue;
 					
 					// i = axes we are point along. iu, iv = orthogonal axes.
@@ -138,17 +147,17 @@ public static class SurfaceNetsMeshGenerator {
 					var iv = (i + 2) % 3;
 					
 					// If we are on a boundary, skip it.
-					if ((pos[iu] <= 0) || (pos[iv] <= 0))
+					if ((pos[i] <= 0) || (pos[iu] <= 0) || (pos[iv] <= 0))
 						continue;
 					
 					// Otherwise, look up adjacent edges in buffer.
 					var du = R[iu];
 					var dv = R[iv];
 
-					var v1 = vertexBuffer[m];
-					var v2 = vertexBuffer[m - du];
-					var v3 = vertexBuffer[m - du - dv];
-					var v4 = vertexBuffer[m - dv];
+					var v1 = _vertexBuffer[m];
+					var v2 = _vertexBuffer[m - du];
+					var v3 = _vertexBuffer[m - du - dv];
+					var v4 = _vertexBuffer[m - dv];
 
 					var normal1 = Vector3.Cross(v2 - v1, v3 - v1).normalized;
 					var normal2 = Vector3.Cross(v3 - v1, v4 - v1).normalized;
