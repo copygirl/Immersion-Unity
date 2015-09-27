@@ -16,6 +16,6 @@ public enum EquipmentRegion {
 
 	LegsUpper,
 	LegsLower,
-	Feet 
+	Feet
 
 }
