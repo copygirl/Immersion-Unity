@@ -236,6 +236,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3145d12f8d9144db1c30f71b0544ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 0}
+  _collider: {fileID: 0}
+  <highlighted>k__BackingField: 0
 --- !u!54 &948426876
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -250,7 +253,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!23 &948426877
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -413,7 +416,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!23 &1168213098
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -480,6 +483,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3145d12f8d9144db1c30f71b0544ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 0}
+  _collider: {fileID: 0}
+  <highlighted>k__BackingField: 0
 --- !u!1 &1171773465
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,6 +801,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3145d12f8d9144db1c30f71b0544ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 0}
+  _collider: {fileID: 0}
+  <highlighted>k__BackingField: 0
 --- !u!54 &1722341766
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -809,7 +818,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!23 &1722341767
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1044,6 +1053,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3145d12f8d9144db1c30f71b0544ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rigidbody: {fileID: 0}
+  _collider: {fileID: 0}
+  <highlighted>k__BackingField: 0
 --- !u!54 &1898094501
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1058,7 +1070,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!23 &1898094502
 MeshRenderer:
   m_ObjectHideFlags: 0

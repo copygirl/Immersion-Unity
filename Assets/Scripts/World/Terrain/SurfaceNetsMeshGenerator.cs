@@ -9,6 +9,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// TODO: Generalize this class to work with any IRawBlockAccess, not just chunks.
 public static class SurfaceNetsMeshGenerator {
 
 	static readonly int[] _cubeEdges;
