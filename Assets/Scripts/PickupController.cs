@@ -30,12 +30,10 @@ public class PickupController : MonoBehaviour {
 		RaycastHit hitInfo;
 		if (Physics.Raycast(_camera.position, _camera.transform.forward, out hitInfo, pickupRange)) {
 			var hitObject = hitInfo.collider.gameObject;
-			if (hitObject != null) {
-				var item = hitObject.GetComponent<Item>();
-				if (item != null) {
-					item.highlighted = true;
-					highlightedItem = item;
-				}
+			var item = hitObject.GetComponent<Item>();
+			if (item != null) {
+				item.highlighted = true;
+				highlightedItem = item;
 			}
 		}
 
