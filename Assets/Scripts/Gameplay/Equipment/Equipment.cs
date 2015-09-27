@@ -6,7 +6,7 @@ public class Equipment : MonoBehaviour, IEnumerable<EquipmentSlot> {
 	List<EquipmentSlot> _slots = new List<EquipmentSlot>();
 
 
-	public EquipmentSlot AddSlot(GameObject attachment, string region, params string[] tags) {
+	public EquipmentSlot AddSlot(GameObject attachment, EquipmentRegion region, params EquipmentTag[] tags) {
 		var slot = new EquipmentSlot(this, attachment, region, tags);
 		_slots.Add(slot);
 		return slot;

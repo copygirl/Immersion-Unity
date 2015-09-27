@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,10 +16,10 @@ public class EquipmentSlot {
 
 
 	/// <summary> Gets the equipment region of this slot. </summary>
-	public string region { get; private set; }
+	public EquipmentRegion region { get; private set; }
 	
-	/// <summary> Gets the equipment tags of this slot, which describe its use. </summary>
-	public IEnumerable<string> tags { get; private set; }
+	/// <summary> Gets the equipment tags of this slot, which further describe its use. </summary>
+	public IEnumerable<EquipmentTag> tags { get; private set; }
 
 
 	/// <summary> Gets the item currently equipped in this slot, null if none. </summary>
@@ -33,7 +33,7 @@ public class EquipmentSlot {
 
 
 	public EquipmentSlot(Equipment equipment, GameObject attachment,
-	                     string region, params string[] tags) {
+	                     EquipmentRegion region, params EquipmentTag[] tags) {
 		this.equipment = equipment;
 		this.attachment = attachment;
 		this.region = region;

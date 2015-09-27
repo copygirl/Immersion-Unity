@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 [RequireComponent(typeof(Equipment))]
 public class PickupController : MonoBehaviour {
@@ -14,12 +14,13 @@ public class PickupController : MonoBehaviour {
 	Equipment _equipment;
 	CameraController _camera;
 
+
 	void Start() {
 		_equipment = GetComponent<Equipment>();
-		rightHand = _equipment.AddSlot(rightHandAttachment, EquipmentRegion.HANDS,
-		                               EquipmentTags.HELD, EquipmentTags.RIGHT);
-		leftHand  = _equipment.AddSlot(leftHandAttachment, EquipmentRegion.HANDS,
-		                               EquipmentTags.HELD, EquipmentTags.LEFT);
+		rightHand = _equipment.AddSlot(rightHandAttachment, EquipmentRegion.Hands,
+		                               EquipmentTag.Held, EquipmentTag.Right);
+		leftHand  = _equipment.AddSlot(leftHandAttachment, EquipmentRegion.Hands,
+		                               EquipmentTag.Held, EquipmentTag.Left);
 		_camera = Camera.main.GetComponent<CameraController>();
 	}
 	
