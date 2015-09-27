@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-/// <summary> Script component identifying game entities that should function as items. </summary>
+/// <summary> Component identifying game objects that function as items
+///           and may be picked up, moved or manipulated as such. </summary>
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 public class Item : MonoBehaviour {
@@ -16,6 +17,13 @@ public class Item : MonoBehaviour {
 
 	/// <summary> Gets or sets whether the item should be highlighted for this frame. </summary>
 	public bool highlighted { get; set; }
+
+
+	/// <summary> Gets or sets the mass of the item in kilograms. </summary>
+	public virtual float weight {
+		get { return _rigidbody.mass; }
+		set { _rigidbody.mass = value; }
+	}
 
 
 	/// <summary> Gets or sets whether other colliders can collide with this item. </summary>
