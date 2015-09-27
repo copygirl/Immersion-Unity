@@ -73,8 +73,7 @@ public class Item : MonoBehaviour {
 		this.slot = slot;
 
 		transform.parent = slot.attachment.transform;
-		transform.localPosition = Vector3.zero;
-		transform.localRotation = Quaternion.identity;
+		transform.ResetPositionAndRotation();
 	}
 
 	/// <summary> Called when the item is unequipped from its current slot. </summary>

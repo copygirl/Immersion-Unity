@@ -14,8 +14,7 @@ public class OutlineRenderer : MonoBehaviour {
 		_outlineObj = new GameObject("Outline");
 
 		_outlineObj.transform.parent = transform;
-		_outlineObj.transform.localPosition = Vector3.zero;
-		_outlineObj.transform.localRotation = Quaternion.identity;
+		_outlineObj.transform.ResetPositionAndRotation();
 		_outlineObj.transform.localScale = Vector3.one;
 
 		_outlineObj.AddComponent<MeshFilter>().mesh =
