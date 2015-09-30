@@ -109,7 +109,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 394013656}
   m_LocalRotation: {x: .50000006, y: 0, z: 0, w: .866025388}
-  m_LocalPosition: {x: -.300000012, y: 0, z: .100000001}
+  m_LocalPosition: {x: -.300000012, y: .0500000007, z: .150000006}
   m_LocalScale: {x: .150000006, y: .150000006, z: .150000006}
   m_Children:
   - {fileID: 1920247824}
@@ -705,7 +705,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1562270441}
   m_LocalRotation: {x: .50000006, y: 0, z: 0, w: .866025388}
-  m_LocalPosition: {x: .300000012, y: 0, z: .100000001}
+  m_LocalPosition: {x: .300000012, y: .0500000007, z: .150000006}
   m_LocalScale: {x: .150000006, y: .150000006, z: .150000006}
   m_Children:
   - {fileID: 1252138369}
@@ -1242,6 +1242,8 @@ GameObject:
   - 114: {fileID: 1786549542}
   - 114: {fileID: 1786549544}
   - 114: {fileID: 1786549546}
+  - 114: {fileID: 1786549547}
+  - 114: {fileID: 1786549545}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1325,6 +1327,19 @@ MonoBehaviour:
   pickupRange: 2
   rightHandAttachment: {fileID: 1252138368}
   leftHandAttachment: {fileID: 1920247823}
+--- !u!114 &1786549545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1786549539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e050a12149a33241a3636a072cdd2d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 394013656}
+  input: Left Hand
 --- !u!114 &1786549546
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1336,6 +1351,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6f09a844d1535543bc9be0bd01730c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1786549547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1786549539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e050a12149a33241a3636a072cdd2d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hand: {fileID: 1562270441}
+  input: Right Hand
 --- !u!1 &1898094498
 GameObject:
   m_ObjectHideFlags: 0
