@@ -13,11 +13,15 @@ public class Item : MonoBehaviour {
 	#region Public properties
 
 	/// <summary> Gets the equipment slot the item is currently carried in, null if none. </summary>
+	// TODO: Add support for items which are equipped in multiple slots.
 	public EquipmentSlot slot { get; private set; }
 
 	/// <summary> Gets or sets whether the item should be highlighted for this frame. </summary>
 	public bool highlighted { get; set; }
 
+
+	/// <summary> Gets if the item is currently equipped somewhere / not on the ground. </summary>
+	public bool equipped { get { return (slot != null); } }
 
 	/// <summary> Gets or sets the mass of the item in kilograms. </summary>
 	public virtual float weight {
