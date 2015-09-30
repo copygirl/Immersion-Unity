@@ -28,8 +28,8 @@ public class Item : MonoBehaviour {
 
 	/// <summary> Gets or sets whether other colliders can collide with this item. </summary>
 	public bool enableCollision {
-		get { return _collider.enabled; }
-		set { _collider.enabled = value; }
+		get { return !_collider.isTrigger; }
+		set { _collider.isTrigger = !value; }
 	}
 
 	/// <summary> Gets or sets whether physics are enabled on this item.
