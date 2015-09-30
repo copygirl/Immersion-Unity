@@ -55,6 +55,11 @@ public class CameraController : MonoBehaviour {
 		var mouseHorizontal = Input.GetAxis("Mouse X");
 		var mouseVertical = Input.GetAxis("Mouse Y");
 
+		if (Input.GetButton("Right Hand") || Input.GetButton("Left Hand")) {
+			mouseHorizontal /= 2;
+			mouseVertical /= 2;
+		}
+
 		pitch = Mathf.Max(minLookAngle, Mathf.Min(maxLookAngle,
 			Mathf.DeltaAngle(0.0f, pitch - mouseVertical * sensitivity.y)));
 
