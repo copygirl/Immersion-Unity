@@ -2,26 +2,29 @@ using UnityEngine;
 
 [RequireComponent(typeof(Equipment))]
 public class PickupController : MonoBehaviour {
+	
+	Equipment _equipment;
+	CameraController _camera;
+
 
 	public float pickupRange = 2.0f;
 
 	public GameObject rightHandAttachment;
 	public GameObject leftHandAttachment;
 
+
 	public EquipmentSlot rightHand { get; private set; }
 	public EquipmentSlot leftHand { get; private set; }
-	
-	Equipment _equipment;
-	CameraController _camera;
 
 
 	void Start() {
 		_equipment = GetComponent<Equipment>();
+		_camera = Camera.main.GetComponent<CameraController>();
+		
 		rightHand = _equipment.AddSlot(rightHandAttachment, EquipmentRegion.Hands,
 		                               EquipmentTag.Held, EquipmentTag.Right);
 		leftHand  = _equipment.AddSlot(leftHandAttachment, EquipmentRegion.Hands,
 		                               EquipmentTag.Held, EquipmentTag.Left);
-		_camera = Camera.main.GetComponent<CameraController>();
 	}
 	
 	void Update() {
