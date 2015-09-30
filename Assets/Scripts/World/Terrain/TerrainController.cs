@@ -11,27 +11,27 @@ public class TerrainController : MonoBehaviour {
 	public int height = 8;
 
 
-	Terrain terrain;
+	Terrain _terrain;
 
 	void Start() {
-		terrain = GetComponent<Terrain>();
+		_terrain = GetComponent<Terrain>();
 
 		for (var x = -width / 2; x < width / 2; x++)
 		for (var y = -depth / 2; y < depth / 2; y++)
 		for (var z = -height / 2; z < height / 2; z++) {
-			var chunk = terrain.CreateChunk(new ChunkPos(x, y, z));
+			var chunk = _terrain.CreateChunk(new ChunkPos(x, y, z));
 			GenerateChunk(chunk);
 		}
 
 		for (var x = -width / 2; x < width / 2; x++)
 		for (var y = -depth / 2; y < depth / 2; y++)
 		for (var z = -height / 2; z < height / 2; z++)
-			((TerrainChunk)terrain[new ChunkPos(x, y, z)]).UpdateMesh();
+			((TerrainChunk)_terrain[new ChunkPos(x, y, z)]).UpdateMesh();
 	}
 
 	void GenerateChunk(IChunk chunk) {
-		var earth = terrain.GetMaterialId(BlockMaterial.EARTH);
-		var sand  = terrain.GetMaterialId(BlockMaterial.SAND);
+		var earth = _terrain.GetMaterialId(BlockMaterial.EARTH);
+		var sand  = _terrain.GetMaterialId(BlockMaterial.SAND);
 
 		for (var x = 0; x < chunk.width; x++)
 		for (var z = 0; z < chunk.height; z++) {

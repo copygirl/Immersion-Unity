@@ -36,8 +36,8 @@ public class TerrainChunk : MonoBehaviour, IChunk {
 		if (_mesh == null) {
 			_mesh = new Mesh();
 			GetComponent<MeshFilter>().sharedMesh = _mesh;
-			GetComponent<MeshRenderer>().material =
-				terrain.GetComponent<MeshRenderer>().material;
+			GetComponent<MeshRenderer>().sharedMaterial =
+				terrain.GetComponent<MeshRenderer>().sharedMaterial;
 		}
 		var access = new IRawBlockAccess[8];
 		for (var i = 0; i < access.Length; i++)
