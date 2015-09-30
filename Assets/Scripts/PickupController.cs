@@ -7,7 +7,8 @@ public class PickupController : MonoBehaviour {
 	CameraController _camera;
 
 
-	public float pickupRange = 2.0f;
+	public float pickupRange = 0.5F;
+	public float swapRange   = 0.25F;
 
 	public GameObject rightHandAttachment;
 	public GameObject leftHandAttachment;
@@ -28,40 +29,76 @@ public class PickupController : MonoBehaviour {
 	}
 	
 	void Update() {
-		Item highlightedItem = null;
-
-		RaycastHit hitInfo;
-		if (Physics.Raycast(_camera.position, _camera.transform.forward, out hitInfo, pickupRange)) {
-			var hitObject = hitInfo.collider.gameObject;
-			var item = hitObject.GetComponent<Item>();
-			if (item != null) {
-				item.highlighted = true;
-				highlightedItem = item;
-			}
+		var right    = Input.GetButton("Right Hand");
+		var left     = Input.GetButton("Left Hand");
+		var interact = Input.GetButtonDown("Interact");
+		
+		if (right && left) {
+			var rightItem = rightHand.item;
+			var leftItem  = leftHand.item;
+			// Item in either or both hands: Allow for swapping
+			// them, if the hands are held together close enough.
+			// TODO: Add delay and "animation" of item switching hands.
+			if (rightHand.occupied || leftHand.occupied) {
+				var inRange = (Vector3.Distance(rightHandAttachment.transform.position,
+				                                leftHandAttachment.transform.position) <= swapRange);
+				if (interact && inRange && (rightItem != leftItem) &&
+					(!rightHand.occupied || (rightItem.CanUnequip(rightHand) && rightItem.CanEquip( leftHand))) &&
+				    (! leftHand.occupied || ( leftItem.CanUnequip( leftHand) &&  leftItem.CanEquip(rightHand)))) {
+					if (rightItem != null) rightHand.Unequip();
+					if ( leftItem != null)  leftHand.Unequip();
+					if (rightItem != null)  leftHand.Equip(rightItem);
+					if ( leftItem != null) rightHand.Equip(leftItem);
+				}
+				if (inRange) {
+					if (rightItem != null) rightItem.highlighted = true;
+					if ( leftItem != null)  leftItem.highlighted = true;
+				}
+			// TODO: This is where you'd pick up items with both hands.
+			} else {  }
+		} else {
+			HandleHand(rightHand, right, interact);
+			HandleHand(leftHand, left, interact);
 		}
-
-		HandleHand(rightHand, "Right Hand", highlightedItem);
-		HandleHand(leftHand, "Left Hand", highlightedItem);
 	}
 
 
-	void HandleHand(EquipmentSlot slot, string input, Item highlightedItem) {
-		var down = Input.GetButton(input);
-		var pressed = Input.GetButtonDown(input);
-		var released = Input.GetButtonUp(input);
-
-		var drop = Input.GetButton("Drop");
-		
+	void HandleHand(EquipmentSlot slot, bool down, bool interact) {
 		if (slot.occupied) {
-			if (drop && pressed) {
-				var item = slot.item;
+			var item = slot.item;
+			if (down && interact && item.CanUnequip(slot)) {
 				slot.Unequip();
 				item.OnDrop();
-				item.GetComponent<Rigidbody>().AddForce((Vector3.up + _camera.transform.forward) * 200.0f);
+				item.GetComponent<Rigidbody>().AddForce(
+					(Vector3.up + _camera.transform.forward) * 200.0f);
 			}
-		} else if ((highlightedItem != null) && pressed) {
-			highlightedItem.OnPickup();
-			slot.Equip(highlightedItem);
+		} else if (down) {
+			Item highlightedItem = null;
+
+			var pos = slot.attachment.transform.position;
+			var distance = pickupRange;
+			var colliders = Physics.OverlapSphere(pos, pickupRange);
+
+			foreach (var col in colliders) {
+				var item = col.GetComponent<Item>();
+				if ((item == null) || item.equipped ||
+				    !item.CanEquip(slot)) continue;
+
+				var dis = Vector3.Distance(pos, col.ClosestPointOnBounds(pos));
+				if (dis <= distance) {
+					highlightedItem = item;
+					distance = dis;
+				}
+			}
+
+			if (highlightedItem != null) {
+				highlightedItem.highlighted = true;
+
+				if (interact) {
+					highlightedItem.OnPickup();
+					slot.Equip(highlightedItem);
+				}
+			}
 		}
 	}
 
