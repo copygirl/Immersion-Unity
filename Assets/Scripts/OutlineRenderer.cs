@@ -3,29 +3,34 @@
 // Source: http://nihilistdev.blogspot.de/2013/05/outline-in-unity-with-mesh-transparency.html
 //
 
+using System.Linq;
 using UnityEngine;
-using System.Collections;
 
 public class OutlineRenderer : MonoBehaviour {
 
-	GameObject _outlineObj;
+	GameObject[] _outlineObjects;
 
 	void Start() {
-		_outlineObj = new GameObject("Outline");
+		_outlineObjects = GetComponentsInChildren<MeshFilter>()
+			.Select(meshFilter => {
+				var obj = new GameObject("Outline");
+				
+				obj.transform.parent = meshFilter.transform;
+				obj.transform.ResetPositionAndRotation();
+				obj.transform.localScale = Vector3.one;
 
-		_outlineObj.transform.parent = transform;
-		_outlineObj.transform.ResetPositionAndRotation();
-		_outlineObj.transform.localScale = Vector3.one;
-
-		_outlineObj.AddComponent<MeshFilter>().mesh =
-			GetComponent<MeshFilter>().sharedMesh;
-		_outlineObj.AddComponent<MeshRenderer>().material =
-			new Material(Shader.Find("Outlined/Silhouetted Diffuse"));
+				obj.AddComponent<MeshFilter>().mesh = meshFilter.sharedMesh;
+				obj.AddComponent<MeshRenderer>().material =
+					new Material(Shader.Find("Outlined/Silhouetted Diffuse"));
+				
+				return obj;
+			}).ToArray();
 	}
 
 	void OnDestroy() {
-		Destroy(_outlineObj);
-		_outlineObj = null;
+		foreach (var obj in _outlineObjects)
+			Destroy(obj);
+		_outlineObjects = null;
 	}
 
 }
