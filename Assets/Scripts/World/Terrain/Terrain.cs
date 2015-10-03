@@ -35,7 +35,8 @@ public class Terrain : MonoBehaviour, IBlockStorage, IBlockMaterialLookup {
 			throw new InvalidOperationException(string.Format(
 				"Chunk at {0} already exists", pos));
 
-		var chunkObject = new GameObject("Chunk: " + pos);
+		var chunkObject = new GameObject("Chunk: " + pos) {
+			hideFlags = HideFlags.HideInHierarchy };
 		var chunk = chunkObject.AddComponent<TerrainChunk>();
 
 		chunk.terrain = this;
