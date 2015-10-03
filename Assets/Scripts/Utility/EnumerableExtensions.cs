@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 public static class EnumerableExtensions {
 
@@ -30,5 +31,24 @@ public static class EnumerableExtensions {
 			throw new ArgumentException("elements is empty", "elements");
 		return enumerable.Contains((IEnumerable<T>)elements);
 	}
-	
+
+	/// <summary> Returns a string of the elements in this enumerable
+	///           joined together, seperated by the specified seperator.
+	///           Returns an empty string if the enumerable is empty. </summary>
+	public static string Join<T>(this IEnumerable<T> enumerable, string seperator) {
+		var enumerator = enumerable.GetEnumerator();
+		if (!enumerator.MoveNext()) return "";
+
+		var builder = new StringBuilder();
+		var last = enumerator.Current;
+
+		while (enumerator.MoveNext()) {
+			builder.Append(last).Append(seperator);
+			last = enumerator.Current;
+		}
+		builder.Append(last);
+
+		return builder.ToString();
+	}
+
 }
