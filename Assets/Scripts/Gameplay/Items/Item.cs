@@ -3,11 +3,10 @@
 /// <summary> Component identifying game objects that function as items
 ///           and may be picked up, moved or manipulated as such. </summary>
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(Collider))]
 public class Item : MonoBehaviour {
 
 	Rigidbody _rigidbody;
-	Collider _collider;
+	Collider[] _colliders;
 
 
 	#region Public properties
@@ -32,8 +31,8 @@ public class Item : MonoBehaviour {
 
 	/// <summary> Gets or sets whether other colliders can collide with this item. </summary>
 	public bool enableCollision {
-		get { return !_collider.isTrigger; }
-		set { _collider.isTrigger = !value; }
+		get { return _colliders[0].isTrigger; }
+		set { foreach (var col in _colliders) col.isTrigger = !value; }
 	}
 
 	/// <summary> Gets or sets whether physics are enabled on this item.
@@ -56,7 +55,7 @@ public class Item : MonoBehaviour {
 
 	void Start() {
 		_rigidbody = GetComponent<Rigidbody>();
-		_collider = GetComponent<Collider>();
+		_colliders = GetComponentsInChildren<Collider>();
 	}
 
 	void LateUpdate() {
