@@ -23,11 +23,11 @@ public class PickupController : MonoBehaviour {
 	void Start() {
 		_equipment = GetComponent<Equipment>();
 		_camera = Camera.main.GetComponent<CameraController>();
-		
-		rightHand = _equipment.AddSlot(rightHandAttachment, EquipmentRegion.Hands,
-		                               EquipmentTag.Held, EquipmentTag.Right);
-		leftHand  = _equipment.AddSlot(leftHandAttachment, EquipmentRegion.Hands,
-		                               EquipmentTag.Held, EquipmentTag.Left);
+
+		rightHand = _equipment.First(slot => ((slot.region == EquipmentRegion.Hands) &&
+		                                      slot.tags.Contains(EquipmentTag.Held, EquipmentTag.Right)));
+		leftHand  = _equipment.First(slot => ((slot.region == EquipmentRegion.Hands) &&
+		                                      slot.tags.Contains(EquipmentTag.Held, EquipmentTag.Left)));
 	}
 	
 	void Update() {
