@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Equipment))]
@@ -80,7 +82,7 @@ public class PickupController : MonoBehaviour {
 			var colliders = Physics.OverlapSphere(pos, pickupRange);
 
 			foreach (var col in colliders) {
-				var item = col.GetComponent<Item>();
+				var item = col.GetComponentInParent<Item>();
 				if ((item == null) || item.equipped ||
 				    !item.CanEquip(slot)) continue;
 
