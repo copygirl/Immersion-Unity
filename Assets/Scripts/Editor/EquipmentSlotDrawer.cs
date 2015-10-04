@@ -1,22 +1,21 @@
 using UnityEditor;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(EquipmentSlotInternal))]
-public class EquipmentSlotInternalDrawer : PropertyDrawer {
+[CustomPropertyDrawer(typeof(EquipmentSlot))]
+public class EquipmentSlotDrawer : PropertyDrawer {
 
 	float height { get { return EditorGUIUtility.singleLineHeight; } }
 	float separation = 2;
 
 	public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
-		return (property.isExpanded ? (5 + property.FindPropertyRelative("tags").arraySize) : 1)
+		return (property.isExpanded ? (4 + property.FindPropertyRelative("_tags").arraySize) : 1)
 			* (height + separation) - separation;
 	}
 
 	public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
-		var region = property.FindPropertyRelative("region");
-		var tags   = property.FindPropertyRelative("tags");
-		var attach = property.FindPropertyRelative("attachment");
-		var item   = property.FindPropertyRelative("item");
+		var region = property.FindPropertyRelative("_region");
+		var tags   = property.FindPropertyRelative("_tags");
+		var attach = property.FindPropertyRelative("_attachment");
 
 		var rect = new Rect(position.position, new Vector2(position.width, height));
 
@@ -52,7 +51,6 @@ public class EquipmentSlotInternalDrawer : PropertyDrawer {
 			rect.y += height + separation;
 
 			EditorGUI.PropertyField(rect, attach); rect.y += height + separation;
-			EditorGUI.PropertyField(rect, item);
 			EditorGUI.indentLevel--;
 		}
 	}

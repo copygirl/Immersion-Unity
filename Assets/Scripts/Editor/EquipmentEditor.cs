@@ -13,8 +13,12 @@ public class EquipmentEditor : Editor {
 			for (var i = 0; i < slots.arraySize; i++)
 				EditorGUILayout.PropertyField(slots.GetArrayElementAtIndex(i));
 			
-			if (GUILayout.Button("Add new Equipment Slot"))
-				slots.arraySize++;
+			if (GUILayout.Button("Add new Equipment Slot")) {
+				var index = slots.arraySize++;          // Increase size and get last index.
+				slots.GetArrayElementAtIndex(index)     // Get EquipmentSlot at that index.
+					.FindPropertyRelative("_equipment") // Find _equipment field on slot.
+					.objectReferenceValue = target;     // Set reference to this Equipment.
+			}
 			
 			EditorGUI.indentLevel--;
 		}

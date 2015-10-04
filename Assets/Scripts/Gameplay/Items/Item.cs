@@ -1,13 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 /// <summary> Component identifying game objects that function as items
 ///           and may be picked up, moved or manipulated as such. </summary>
 [RequireComponent(typeof(Rigidbody))]
-public class Item : MonoBehaviour {
+public class Item : MonoBehaviour, ISerializationCallbackReceiver {
 
 	Rigidbody _rigidbody;
 	Collider[] _colliders;
-
 
 	#region Public properties
 
@@ -52,6 +52,7 @@ public class Item : MonoBehaviour {
 
 	#endregion
 
+	#region MonoBehavior methods
 
 	void Start() {
 		_rigidbody = GetComponent<Rigidbody>();
@@ -69,6 +70,9 @@ public class Item : MonoBehaviour {
 		highlighted = false;
 	}
 
+	#endregion
+
+	#region Public methods
 
 	/// <summary> Returns if the item may be equipped in the specified slot.
 	///           Doesn't check any requirement than just those of the item itself. </summary>
@@ -82,7 +86,6 @@ public class Item : MonoBehaviour {
 	/// <summary> Called when the item is equipped in the specified slot. </summary>
 	public virtual void OnEquip(EquipmentSlot slot) {
 		this.slot = slot;
-
 		transform.parent = slot.attachment.transform;
 		transform.ResetPositionAndRotation();
 	}
@@ -90,7 +93,6 @@ public class Item : MonoBehaviour {
 	/// <summary> Called when the item is unequipped from its current slot. </summary>
 	public virtual void OnUnequip() {
 		this.slot = null;
-
 		transform.parent = null;
 	}
 
@@ -99,7 +101,6 @@ public class Item : MonoBehaviour {
 	public virtual void OnPickup() {
 		enableCollision = false;
 		enablePhysics = false;
-
 	}
 
 	/// <summary> Called when the item is dropped into the world,
@@ -108,5 +109,19 @@ public class Item : MonoBehaviour {
 		enableCollision = true;
 		enablePhysics = true;
 	}
+
+	#endregion
+
+	#region ISerializationCallbackReceiver implementation
+
+	public void OnBeforeSerialize() {  }
+
+	public void OnAfterDeserialize() {
+		var equipment = GetComponentInParent<Equipment>();
+		if (equipment == null) return;
+		slot = equipment.FirstOrDefault(s => (s.attachment == transform.parent.gameObject));
+	}
+
+	#endregion
 
 }
